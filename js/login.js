@@ -1,79 +1,179 @@
-// ============================================================
-// USUÁRIOS E SISTEMA DE IDs
-// ============================================================
-const users = [
-    { id: 1, name: 'Muh.png', pass: '010918' },
-    { id: 2, name: 'Carol', pass: '1234' },
-    { id: 3, name: 'Raiany', pass: '1234' }
-];
+/* ============================================================
+   MUHSIC — LOGIN.JS
+   Lógica de login, sessão, logout e temas
+   ------------------------------------------------------------
+   Usado tanto na landing (index.html) quanto no app (muhsic.html)
+   ============================================================ */
 
-let currentUserId = 1;
-let currentUserName = 'Muh.png';
+/* ============================================================
+   MODAIS (só na landing)
+   ============================================================ */
+function openModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+}
+function closeModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+}
 
-// ============================================================
-// LOGIN HANDLER (chamado após o DOM estar pronto - ver script.js)
-// ============================================================
+/* ============================================================
+   SESSÃO (localStorage)
+   ============================================================ */
+function saveSession(user) {
+    localStorage.setItem('muhsic_userId', user.id);
+    localStorage.setItem('muhsic_userName', user.name);
+    localStorage.setItem('muhsic_userLogin', user.login);
+    localStorage.setItem('muhsic_userPlan', user.plan);
+    localStorage.setItem('muhsic_userAvatar', user.avatar || '');
+}
+
+function loadSession() {
+    const id = localStorage.getItem('muhsic_userId');
+    if (!id) return null;
+    return {
+        id: parseInt(id),
+        name: localStorage.getItem('muhsic_userName'),
+        login: localStorage.getItem('muhsic_userLogin'),
+        plan: localStorage.getItem('muhsic_userPlan'),
+        avatar: localStorage.getItem('muhsic_userAvatar')
+    };
+}
+
+function clearSession() {
+    ['muhsic_userId', 'muhsic_userName', 'muhsic_userLogin',
+     'muhsic_userPlan', 'muhsic_userAvatar', 'muhsic_theme']
+    .forEach(k => localStorage.removeItem(k));
+}
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
 function handleLogin() {
-    const loginUser = document.getElementById('loginUser');
-    const loginPassword = document.getElementById('loginPassword');
-    const loginError = document.getElementById('loginError');
-    const loginScreen = document.getElementById('loginScreen');
-    const appContainer = document.getElementById('app');
-    const playerFooter = document.getElementById('playerFooter');
-    const loginAnimation = document.getElementById('loginAnimation');
+    const loginEl = document.getElementById('loginUser');
+    const passEl  = document.getElementById('loginPassword');
+    const errEl   = document.getElementById('loginError');
 
-    const user = loginUser.value.trim();
-    const pass = loginPassword.value.trim();
-    const found = users.find(u => u.name === user && u.pass === pass);
+    if (!loginEl || !passEl) return;
 
-    if (found) {
-        currentUserId = found.id;
-        currentUserName = found.name;
-        loginError.textContent = '';
-        loginScreen.classList.add('hidden');
-        appContainer.classList.add('active');
-        playerFooter.style.display = 'flex';
-        document.getElementById('userName').textContent = currentUserName;
-        document.getElementById('greetingUser').textContent = currentUserName;
-        initApp();
+    const login = loginEl.value.trim();
+    const pass  = passEl.value.trim();
 
-        loginAnimation.classList.add('active');
-        void loginAnimation.offsetWidth;
-        setTimeout(() => {
-            const startSound = new Audio('https://res.cloudinary.com/oizv8icb/video/upload/v1786685196/StartTypo.wav');
-            startSound.play().catch(e => console.log('Som não pôde ser reproduzido:', e));
-        }, 100);
-        setTimeout(() => {
-            loginAnimation.classList.remove('active');
-        }, 2200);
-    } else {
-        loginError.textContent = 'Usuário ou senha inválidos. Tente novamente.';
-        loginUser.focus();
+    if (errEl) errEl.textContent = '';
+
+    if (!login || !pass) {
+        if (errEl) errEl.textContent = 'Preencha usuário e senha.';
+        return;
     }
+
+    const user = findUserByLogin(login, pass);
+    if (!user) {
+        if (errEl) errEl.textContent = 'Usuário ou senha inválidos.';
+        return;
+    }
+
+    // Sucesso
+    saveSession(user);
+
+    // Redireciona para o app
+    window.location.href = 'muhsic.html';
 }
 
-// ============================================================
-// LOGOUT HANDLER
-// ============================================================
+/* ============================================================
+   LOGOUT
+   ============================================================ */
 function handleLogout() {
-    const appContainer = document.getElementById('app');
-    const playerFooter = document.getElementById('playerFooter');
-    const loginScreen = document.getElementById('loginScreen');
-    const dropdownMenu = document.getElementById('dropdownMenu');
-
-    appContainer.classList.remove('active');
-    playerFooter.style.display = 'none';
-    loginScreen.classList.remove('hidden');
-    fadePause().then(() => { audio.currentTime = 0; });
-    dropdownMenu.classList.remove('show');
-    state.isPlaying = false;
-    currentPlayingSongId = null;
-    playBtn.innerHTML = '<i class="fas fa-play"></i>';
-    visualizer.classList.remove('active');
-    document.getElementById('playlistDetail').classList.remove('active');
-    document.getElementById('page-home').classList.add('active');
-    document.querySelector('.nav-menu li[data-page="home"]')?.classList.add('active');
-    document.querySelector('.nav-menu li[data-page="search"]')?.classList.remove('active');
-    document.querySelector('.nav-menu li[data-page="library"]')?.classList.remove('active');
-    updateHighlight();
+    clearSession();
+    window.location.href = 'index.html';
 }
+
+/* ============================================================
+   GUARD DE SESSÃO (só no muhsic.html)
+   ------------------------------------------------------------
+   Se o usuário não está logado, redireciona pra landing.
+   ============================================================ */
+function requireSession() {
+    const session = loadSession();
+    if (!session) {
+        window.location.href = 'index.html';
+        return null;
+    }
+    return session;
+}
+
+/* ============================================================
+   TEMAS (perso.css)
+   ============================================================ */
+function applyTheme(themeId) {
+    document.body.setAttribute('data-theme', themeId);
+    localStorage.setItem('muhsic_theme', themeId);
+}
+
+function loadTheme() {
+    const saved = localStorage.getItem('muhsic_theme') || 'default';
+    applyTheme(saved);
+}
+
+/* ============================================================
+   BIND DE EVENTOS — LANDING
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+
+    /* ---- Botões que abrem modais ---- */
+    const openLogin    = document.getElementById('openLoginBtn');
+    const openRegister = document.getElementById('openRegisterBtn');
+    const heroLogin    = document.getElementById('heroLoginBtn');
+    const heroRegister = document.getElementById('heroRegisterBtn');
+
+    if (openLogin)    openLogin.addEventListener('click', () => openModal('loginModal'));
+    if (openRegister) openRegister.addEventListener('click', () => openModal('registerModal'));
+    if (heroLogin)    heroLogin.addEventListener('click', () => openModal('loginModal'));
+    if (heroRegister) heroRegister.addEventListener('click', () => openModal('registerModal'));
+
+    /* ---- Botões de fechar ---- */
+    document.querySelectorAll('.modal-close').forEach(btn => {
+        btn.addEventListener('click', () => closeModal(btn.dataset.close));
+    });
+
+    /* ---- Fechar clicando fora ---- */
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', e => {
+            if (e.target === overlay) overlay.classList.remove('active');
+        });
+    });
+
+    /* ---- Trocar entre login/register ---- */
+    const switchToRegister = document.getElementById('switchToRegister');
+    const switchToLogin    = document.getElementById('switchToLogin');
+
+    if (switchToRegister) switchToRegister.addEventListener('click', e => {
+        e.preventDefault();
+        closeModal('loginModal');
+        openModal('registerModal');
+    });
+    if (switchToLogin) switchToLogin.addEventListener('click', e => {
+        e.preventDefault();
+        closeModal('registerModal');
+        openModal('loginModal');
+    });
+
+    /* ---- Botão de login ---- */
+    const loginBtn = document.getElementById('loginButton');
+    if (loginBtn) loginBtn.addEventListener('click', handleLogin);
+
+    /* ---- Enter nos campos de login ---- */
+    ['loginUser', 'loginPassword'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('keydown', e => {
+            if (e.key === 'Enter') { e.preventDefault(); handleLogin(); }
+        });
+    });
+
+    /* ---- Botões de plano na landing ---- */
+    document.querySelectorAll('.btn-plan').forEach(btn => {
+        btn.addEventListener('click', () => {
+            openModal('registerModal');
+        });
+    });
+
+});

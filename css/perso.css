@@ -1,0 +1,228 @@
+/* ============================================================
+   MUHSIC — PERSO.CSS
+   Temas personalizados por usuário (via body[data-theme])
+   Mantém o visual padrão (cinza/escuro) e troca apenas a cor de destaque
+   ============================================================ */
+
+/* ===== TEMA: PADRÃO (verde Muhsic) ===== */
+body[data-theme="default"] {
+    --green-spotify: #1db954;
+    --green-hover: #1ed760;
+}
+
+/* ===== TEMA: CLARO ===== */
+body[data-theme="light"] {
+    --bg-dark: #f5f5f5;
+    --bg-sidebar: #ffffff;
+    --bg-main: #fafafa;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f0f0f0;
+    --bg-footer: #ffffff;
+
+    --text-primary: #121212;
+    --text-secondary: #555;
+    --text-muted: #888;
+
+    --green-spotify: #1db954;
+    --green-hover: #1ed760;
+
+    --border-color: #e0e0e0;
+    --shadow: 0 8px 24px rgba(0,0,0,0.08);
+
+    --track-even: rgba(0,0,0,0.02);
+    --track-odd: rgba(0,0,0,0.05);
+}
+body[data-theme="light"] .main {
+    background:linear-gradient(180deg, #ececec 0%, var(--bg-main) 100%);
+}
+body[data-theme="light"] .main-header {
+    background:rgba(245,245,245,0.9);
+}
+body[data-theme="light"] .dropdown-menu {
+    background:#fff;
+    border-color:#e0e0e0;
+}
+body[data-theme="light"] .dropdown-menu .dropdown-item:hover {
+    background:rgba(0,0,0,0.05);
+}
+body[data-theme="light"] .track-item:hover {
+    background:rgba(0,0,0,0.06) !important;
+}
+body[data-theme="light"] .search-bar {
+    background:#e8e8e8;
+}
+body[data-theme="light"] .search-bar:focus-within {
+    background:#ddd;
+}
+
+/* ===== TEMA: VERMELHO ===== */
+body[data-theme="red"] {
+    --green-spotify: #e63946;
+    --green-hover: #ff4d5c;
+}
+
+/* ===== TEMA: AZUL ===== */
+body[data-theme="blue"] {
+    --green-spotify: #457b9d;
+    --green-hover: #5a95b8;
+}
+
+/* ===== TEMA: ROXO ===== */
+body[data-theme="purple"] {
+    --green-spotify: #a020f0;
+    --green-hover: #b84dff;
+}
+
+/* ===== TEMA: VERDE (esmeralda) ===== */
+body[data-theme="green"] {
+    --green-spotify: #2ecc71;
+    --green-hover: #52d98a;
+}
+
+/* ===== TEMA: LARANJA ===== */
+body[data-theme="orange"] {
+    --green-spotify: #f39c12;
+    --green-hover: #f7b040;
+}
+
+/* ============================================================
+   MODAL DE CONFIGURAÇÕES (TEMAS)
+   ============================================================ */
+.settings-overlay {
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.75);
+    backdrop-filter:blur(6px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:1100;
+    padding:20px;
+}
+.settings-overlay.active { display:flex; }
+
+.settings-panel {
+    background:#181818;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:20px;
+    padding:36px 32px;
+    width:100%;
+    max-width:520px;
+    position:relative;
+    box-shadow:0 30px 80px rgba(0,0,0,0.8);
+    animation:modalIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.settings-close {
+    position:absolute;
+    top:16px;
+    right:16px;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.05);
+    border:none;
+    color:var(--text-secondary);
+    font-size:16px;
+    cursor:pointer;
+    transition:all var(--transition);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.settings-close:hover {
+    background:rgba(255,255,255,0.1);
+    color:#fff;
+    transform:rotate(90deg);
+}
+.settings-panel h2 {
+    font-size:24px;
+    font-weight:800;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:6px;
+}
+.settings-panel h2 i { color:var(--green-spotify); }
+.settings-sub {
+    font-size:14px;
+    color:var(--text-secondary);
+    margin-bottom:28px;
+}
+.settings-section h3 {
+    font-size:14px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--text-secondary);
+    margin-bottom:16px;
+}
+
+.theme-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(90px,1fr));
+    gap:12px;
+}
+.theme-swatch {
+    background:#2a2a2a;
+    border:2px solid transparent;
+    border-radius:12px;
+    padding:14px 8px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+    transition:all var(--transition);
+    font-family:var(--font);
+}
+.theme-swatch:hover {
+    background:#333;
+    transform:translateY(-2px);
+}
+.theme-swatch.active {
+    border-color:var(--green-spotify);
+    background:#2e2e2e;
+    box-shadow:0 0 16px rgba(29,185,84,0.3);
+}
+.theme-swatch .swatch-color {
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    border:2px solid rgba(255,255,255,0.15);
+}
+.theme-swatch span:last-child {
+    font-size:12px;
+    color:var(--text-secondary);
+    font-weight:500;
+}
+
+/* ===== AVISO DE BLOQUEIO ===== */
+.settings-locked {
+    background:linear-gradient(135deg, rgba(160,32,240,0.1), rgba(255,215,0,0.05));
+    border:1px solid rgba(160,32,240,0.3);
+    border-radius:12px;
+    padding:20px;
+    margin-top:16px;
+    text-align:center;
+}
+.settings-locked i {
+    font-size:24px;
+    color:var(--premium-purple);
+    margin-bottom:10px;
+}
+.settings-locked p {
+    font-size:14px;
+    color:var(--text-secondary);
+    line-height:1.5;
+}
+.settings-locked strong {
+    color:var(--gold);
+}
+
+/* Bloquear visualmente os temas quando locked */
+.settings-locked ~ .theme-grid,
+.theme-grid.locked {
+    opacity:0.4;
+    pointer-events:none;
+    filter:blur(1px);
+}
