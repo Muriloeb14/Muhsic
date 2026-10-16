@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muhsic - Player de Música</title>
+
+    <!-- Ícones e Fontes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- CSS do App -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ANIMAÇÃO DE LOGIN -->
+    <div class="login-animation-overlay" id="loginAnimation">
+        <img src="https://res.cloudinary.com/oizv8icb/image/upload/v1786684408/MFADE.png" alt="Muhsic Logo">
+    </div>
+
+    <!-- LOGIN SCREEN -->
+    <div class="login-screen" id="loginScreen">
+        <div class="form">
+            <div class="author-credit">Por: Murilo N.B</div>
+            <div class="logo-login">
+                <img src="https://res.cloudinary.com/oizv8icb/image/upload/v1786581131/Muhsic.png" alt="Muhsic Logo">
+            </div>
+            <p>Bem-vindo ao Muhsic</p>
+
+            <button type="button" class="oauthButton">
+                <img src="https://res.cloudinary.com/oizv8icb/image/upload/v1787352466/google.png" alt="Google" class="google-icon">
+                Continuar com Google
+            </button>
+
+            <button type="button" class="oauthButton">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                Continuar com Github
+            </button>
+
+            <div class="separator"><div></div><span>OU</span><div></div></div>
+
+            <input type="text" placeholder="Usuário" id="loginUser">
+            <input type="password" placeholder="Senha" id="loginPassword">
+
+            <button type="button" class="login-btn" id="loginButton">
+                Continuar
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 17 5-5-5-5"/><path d="m13 17 5-5-5-5"/></svg>
+            </button>
+
+            <div class="login-error" id="loginError"></div>
+        </div>
+    </div>
+
+    <!-- APP -->
+    <div class="app" id="app">
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="https://res.cloudinary.com/oizv8icb/image/upload/v1786581131/Muhsic.png" alt="Muhsic">
+            </div>
+            <ul class="nav-menu">
+                <li class="active" data-page="home"><i class="fas fa-home"></i><span>Início</span></li>
+                <li data-page="search"><i class="fas fa-search"></i><span>Buscar</span></li>
+                <li data-page="library"><i class="fas fa-book"></i><span>Biblioteca</span></li>
+            </ul>
+            <div id="sidebarPlaylistsContainer"></div>
+        </aside>
+
+        <main class="main">
+            <header class="main-header">
+                <span class="version-badge" id="versionBadgeHeader">BETA: 0.5</span>
+                <div class="user-profile" id="userProfile">
+                    <img src="https://res.cloudinary.com/oizv8icb/image/upload/v1786594773/178054037.jpg" alt="Avatar" class="avatar-img">
+                    <span id="userName">Muh.png</span>
+                    <i class="fas fa-caret-down"></i>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <div class="dropdown-item plan-info"><i class="fas fa-crown"></i> Plano: Muhsic+</div>
+                        <div class="dropdown-item logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sair</div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="page active" id="page-home">
+                <h2>Bem-vindo, <span id="greetingUser">Muh.png</span></h2>
+                <div id="homePlaylistsContainer"></div>
+            </section>
+
+            <section class="playlist-detail" id="playlistDetail">
+                <button class="back-btn" id="backToHome"><i class="fas fa-arrow-left"></i></button>
+                <div class="playlist-header" id="detailHeader">
+                    <div class="big-cover" id="detailCover"></div>
+                    <div class="playlist-info">
+                        <h2 id="detailTitle">Playlist</h2>
+                        <div class="playlist-meta" id="detailMeta"></div>
+                        <div class="playlist-actions" id="detailActions">
+                            <button class="like-btn" title="Curtir">
+                                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                </svg>
+                            </button>
+                            <button class="save-btn" title="Salvar">
+                                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="12" y1="8" x2="12" y2="16"/>
+                                    <line x1="8" y1="12" x2="16" y2="12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="track-list" id="trackList"></div>
+            </section>
+
+            <section class="page" id="page-search">
+                <h2>Buscar</h2>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="O que você quer ouvir?" id="searchInput">
+                </div>
+                <div id="searchResults" class="track-list"></div>
+            </section>
+
+            <!-- BIBLIOTECA -->
+            <section class="page" id="page-library">
+                <div class="playlist-detail active" style="display:block;">
+                    <div class="playlist-header" style="background:linear-gradient(135deg, #1a3a2a, #0f281a); background-size:200% 200%; animation:gradientMove 8s ease-in-out infinite;">
+                        <div class="big-cover single-cover">
+                            <img src="https://res.cloudinary.com/oizv8icb/image/upload/v1786813773/MGIF.gif" alt="Biblioteca">
+                        </div>
+                        <div class="playlist-info">
+                            <h2>Biblioteca</h2>
+                            <div class="playlist-meta">
+                                <span class="meta-item"><i class="fas fa-list-ul"></i> <span id="libraryCount">0</span> músicas</span>
+                                <span class="meta-item"><i class="far fa-clock"></i> <span id="libraryDuration">0:00</span></span>
+                                <span class="meta-item"><i class="fas fa-user"></i> <span id="libraryUser">Muh.png</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="track-list" id="libraryList"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- PLAYER -->
+    <footer class="player" id="playerFooter" style="display:none;">
+        <div class="now-playing" id="nowPlayingClick">
+            <div class="np-img" id="npImg"><span>🎵</span></div>
+            <div class="np-info">
+                <div class="np-title" id="npTitle">Nenhuma música</div>
+                <div class="np-artist" id="npArtist">-</div>
+            </div>
+            <div class="np-like" id="npLike"><i class="fas fa-heart"></i></div>
+        </div>
+
+        <div class="controls">
+            <div class="buttons">
+                <button id="shuffleBtn" title="Aleatório"><i class="fas fa-random"></i></button>
+                <button id="prevBtn" title="Anterior"><i class="fas fa-step-backward"></i></button>
+                <button class="play-btn" id="playBtn"><i class="fas fa-play"></i></button>
+                <button id="nextBtn" title="Próxima"><i class="fas fa-step-forward"></i></button>
+                <button id="resetBtn" title="Resetar música"><i class="fas fa-undo-alt"></i></button>
+            </div>
+            <div class="progress-area">
+                <span class="time" id="currentTime">0:00</span>
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span class="time" id="totalTime">0:00</span>
+            </div>
+        </div>
+
+        <div class="volume">
+            <i class="fas fa-volume-up" id="volumeIcon"></i>
+            <div class="volume-bar" id="volumeBar">
+                <div class="volume-fill" id="volumeFill"></div>
+            </div>
+            <div class="audio-visualizer" id="audioVisualizer">
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </footer>
+
+    <audio id="audioPlayer" style="display:none;"></audio>
+
+    <!-- SCRIPTS -->
+    <script src="js/musics.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
