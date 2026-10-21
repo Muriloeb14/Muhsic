@@ -1,179 +1,290 @@
 /* ============================================================
    MUHSIC — LOGIN.JS
-   Lógica de login, sessão, logout e temas
-   ------------------------------------------------------------
-   Usado tanto na landing (index.html) quanto no app (muhsic.html)
+   Login, cadastro, sessão e configuração de plano
    ============================================================ */
+
+const SESSION_KEY = 'muhsic_session';
+const USERS_KEY   = 'muhsic_users';
 
 /* ============================================================
-   MODAIS (só na landing)
+   SESSÃO
    ============================================================ */
-function openModal(id) {
-    const el = document.getElementById(id);
-    if (el) el.classList.add('active');
-}
-function closeModal(id) {
-    const el = document.getElementById(id);
-    if (el) el.classList.remove('active');
-}
-
-/* ============================================================
-   SESSÃO (localStorage)
-   ============================================================ */
-function saveSession(user) {
-    localStorage.setItem('muhsic_userId', user.id);
-    localStorage.setItem('muhsic_userName', user.name);
-    localStorage.setItem('muhsic_userLogin', user.login);
-    localStorage.setItem('muhsic_userPlan', user.plan);
-    localStorage.setItem('muhsic_userAvatar', user.avatar || '');
+function salvarSessao(user) {
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+        id: user.id,
+        name: user.name,
+        plan: user.plan || 'free',
+        avatar: user.avatar || null
+    }));
 }
 
-function loadSession() {
-    const id = localStorage.getItem('muhsic_userId');
-    if (!id) return null;
-    return {
-        id: parseInt(id),
-        name: localStorage.getItem('muhsic_userName'),
-        login: localStorage.getItem('muhsic_userLogin'),
-        plan: localStorage.getItem('muhsic_userPlan'),
-        avatar: localStorage.getItem('muhsic_userAvatar')
-    };
-}
-
-function clearSession() {
-    ['muhsic_userId', 'muhsic_userName', 'muhsic_userLogin',
-     'muhsic_userPlan', 'muhsic_userAvatar', 'muhsic_theme']
-    .forEach(k => localStorage.removeItem(k));
-}
-
-/* ============================================================
-   LOGIN
-   ============================================================ */
-function handleLogin() {
-    const loginEl = document.getElementById('loginUser');
-    const passEl  = document.getElementById('loginPassword');
-    const errEl   = document.getElementById('loginError');
-
-    if (!loginEl || !passEl) return;
-
-    const login = loginEl.value.trim();
-    const pass  = passEl.value.trim();
-
-    if (errEl) errEl.textContent = '';
-
-    if (!login || !pass) {
-        if (errEl) errEl.textContent = 'Preencha usuário e senha.';
-        return;
-    }
-
-    const user = findUserByLogin(login, pass);
-    if (!user) {
-        if (errEl) errEl.textContent = 'Usuário ou senha inválidos.';
-        return;
-    }
-
-    // Sucesso
-    saveSession(user);
-
-    // Redireciona para o app
-    window.location.href = 'muhsic.html';
-}
-
-/* ============================================================
-   LOGOUT
-   ============================================================ */
-function handleLogout() {
-    clearSession();
-    window.location.href = 'index.html';
-}
-
-/* ============================================================
-   GUARD DE SESSÃO (só no muhsic.html)
-   ------------------------------------------------------------
-   Se o usuário não está logado, redireciona pra landing.
-   ============================================================ */
 function requireSession() {
-    const session = loadSession();
-    if (!session) {
-        window.location.href = 'index.html';
+    try {
+        const raw = localStorage.getItem(SESSION_KEY);
+        if (!raw) return null;
+        const s = JSON.parse(raw);
+        if (!s || !s.id || !s.name) return null;
+        return s;
+    } catch (e) {
+        console.error('Sessão inválida:', e);
         return null;
     }
-    return session;
+}
+
+function handleLogout() {
+    localStorage.removeItem(SESSION_KEY);
+    window.location.replace('index.html');
 }
 
 /* ============================================================
-   TEMAS (perso.css)
+   PLANOS
    ============================================================ */
-function applyTheme(themeId) {
-    document.body.setAttribute('data-theme', themeId);
-    localStorage.setItem('muhsic_theme', themeId);
-}
-
-function loadTheme() {
-    const saved = localStorage.getItem('muhsic_theme') || 'default';
-    applyTheme(saved);
+function getPlanConfig(plan) {
+    const plans = {
+        free:    { label: 'Free',    color: '#b3b3b3', showAds: true,  hasThemes: false },
+        plus:    { label: 'Muhsic+', color: '#1ed760', showAds: false, hasThemes: true  },
+        premium: { label: 'Premium', color: '#FFD700', showAds: false, hasThemes: true  }
+    };
+    return plans[plan] || plans.free;
 }
 
 /* ============================================================
-   BIND DE EVENTOS — LANDING
+   USUÁRIOS — leitura do users.js + cadastros locais
    ============================================================ */
-document.addEventListener('DOMContentLoaded', () => {
+function carregarUsuariosLocais() {
+    try {
+        const raw = localStorage.getItem(USERS_KEY);
+        if (!raw) return [];
+        const arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr : [];
+    } catch (e) {
+        return [];
+    }
+}
 
-    /* ---- Botões que abrem modais ---- */
-    const openLogin    = document.getElementById('openLoginBtn');
-    const openRegister = document.getElementById('openRegisterBtn');
-    const heroLogin    = document.getElementById('heroLoginBtn');
-    const heroRegister = document.getElementById('heroRegisterBtn');
+function salvarUsuariosLocais(lista) {
+    try {
+        localStorage.setItem(USERS_KEY, JSON.stringify(lista));
+    } catch (e) {
+        console.error('Falha ao salvar usuários:', e);
+    }
+}
 
-    if (openLogin)    openLogin.addEventListener('click', () => openModal('loginModal'));
-    if (openRegister) openRegister.addEventListener('click', () => openModal('registerModal'));
-    if (heroLogin)    heroLogin.addEventListener('click', () => openModal('loginModal'));
-    if (heroRegister) heroRegister.addEventListener('click', () => openModal('registerModal'));
+/* Tenta extrair usuários de users.js em vários formatos comuns */
+function extrairUsuariosBase() {
+    // 1) getUsers() função
+    try {
+        if (typeof getUsers === 'function') {
+            const r = getUsers();
+            if (Array.isArray(r)) return r;
+        }
+    } catch (e) {}
 
-    /* ---- Botões de fechar ---- */
-    document.querySelectorAll('.modal-close').forEach(btn => {
-        btn.addEventListener('click', () => closeModal(btn.dataset.close));
+    // 2) Arrays globais comuns
+    const candidatos = [];
+    try { if (typeof baseUsers !== 'undefined') candidatos.push(baseUsers); } catch (e) {}
+    try { if (typeof USERS !== 'undefined') candidatos.push(USERS); } catch (e) {}
+    try { if (typeof users !== 'undefined') candidatos.push(users); } catch (e) {}
+    try { if (typeof baseSongs !== 'undefined' && Array.isArray(baseSongs)) {} } catch (e) {}
+
+    for (const c of candidatos) {
+        if (Array.isArray(c) && c.length) return c;
+    }
+
+    // 3) Objeto mapa { user1: {...}, user2: {...} }
+    for (const nome of ['USERS', 'users', 'baseUsers']) {
+        try {
+            const obj = eval(nome);
+            if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+                const vals = Object.values(obj);
+                if (vals.length && typeof vals[0] === 'object') return vals;
+            }
+        } catch (e) {}
+    }
+
+    return [];
+}
+
+/* Junta usuários base + locais (locais sobrescrevem base por username) */
+function listarTodosUsuarios() {
+    const base = extrairUsuariosBase();
+    const locais = carregarUsuariosLocais();
+    const mapa = new Map();
+
+    [...base, ...locais].forEach(u => {
+        if (!u || typeof u !== 'object') return;
+        const chave = (
+            u.username || u.user || u.login || u.name || ''
+        ).toString().toLowerCase();
+        if (chave) mapa.set(chave, u);
     });
 
-    /* ---- Fechar clicando fora ---- */
-    document.querySelectorAll('.modal-overlay').forEach(overlay => {
-        overlay.addEventListener('click', e => {
-            if (e.target === overlay) overlay.classList.remove('active');
-        });
-    });
+    return [...mapa.values()];
+}
 
-    /* ---- Trocar entre login/register ---- */
-    const switchToRegister = document.getElementById('switchToRegister');
-    const switchToLogin    = document.getElementById('switchToLogin');
+/* Extrai nome de usuário de um objeto usuário em vários formatos */
+function nomeDoUsuario(u) {
+    return (u.username || u.user || u.login || u.name || '').toString();
+}
 
-    if (switchToRegister) switchToRegister.addEventListener('click', e => {
+/* Extrai senha em vários formatos */
+function senhaDoUsuario(u) {
+    return (u.password || u.pass || u.senha || '').toString();
+}
+
+/* Valida usuário/senha. Retorna o objeto usuário ou null */
+function validarCredenciais(username, password) {
+    const alvo = username.trim().toLowerCase();
+    const lista = listarTodosUsuarios();
+    return lista.find(u => {
+        const nome = nomeDoUsuario(u).toLowerCase();
+        const senha = senhaDoUsuario(u);
+        return nome === alvo && senha === password;
+    }) || null;
+}
+
+/* ============================================================
+   LANDING (index.html) — modal de login e register
+   ============================================================ */
+function initLanding() {
+    const modal = document.getElementById('authModal');
+    if (!modal) return; // não está na landing
+
+    const tabLogin     = document.getElementById('tabLogin');
+    const tabRegister  = document.getElementById('tabRegister');
+    const paneLogin    = document.getElementById('paneLogin');
+    const paneRegister = document.getElementById('paneRegister');
+
+    function abrirModal(aba) {
+        modal.classList.add('active');
+        trocarAba(aba || 'login');
+    }
+    function fecharModal() {
+        modal.classList.remove('active');
+        limparMensagens();
+    }
+    function trocarAba(aba) {
+        const isLogin = aba === 'login';
+        tabLogin.classList.toggle('active', isLogin);
+        tabRegister.classList.toggle('active', !isLogin);
+        paneLogin.classList.toggle('hidden', !isLogin);
+        paneRegister.classList.toggle('hidden', isLogin);
+        limparMensagens();
+    }
+    function limparMensagens() {
+        const l = document.getElementById('loginMsg');
+        const r = document.getElementById('registerMsg');
+        if (l) { l.textContent = ''; l.className = 'modal-msg'; }
+        if (r) { r.textContent = ''; r.className = 'modal-msg'; }
+    }
+
+    /* Botões de abrir (usa optional chaining para não quebrar se algum faltar) */
+    document.getElementById('btnHeaderEntrar')?.addEventListener('click', () => abrirModal('login'));
+    document.getElementById('navLogin')?.addEventListener('click', (e) => { e.preventDefault(); abrirModal('login'); });
+    document.getElementById('navRegister')?.addEventListener('click', (e) => { e.preventDefault(); abrirModal('register'); });
+    document.getElementById('btnHeroComecar')?.addEventListener('click', () => abrirModal('register'));
+    document.getElementById('btnHeroLogin')?.addEventListener('click', () => abrirModal('login'));
+
+    /* Fechar */
+    document.getElementById('modalClose')?.addEventListener('click', fecharModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) fecharModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharModal(); });
+
+    /* Tabs */
+    tabLogin?.addEventListener('click', () => trocarAba('login'));
+    tabRegister?.addEventListener('click', () => trocarAba('register'));
+
+    /* ===== LOGIN ===== */
+    document.getElementById('loginForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
-        closeModal('loginModal');
-        openModal('registerModal');
+        const msg = document.getElementById('loginMsg');
+        const userEl = document.getElementById('loginUser');
+        const passEl = document.getElementById('loginPass');
+
+        const username = (userEl?.value || '').trim();
+        const password = passEl?.value || '';
+
+        if (!username || !password) {
+            if (msg) { msg.textContent = 'Preencha usuário e senha.'; msg.className = 'modal-msg error'; }
+            return;
+        }
+
+        const conta = validarCredenciais(username, password);
+
+        if (!conta) {
+            if (msg) { msg.textContent = 'Usuário ou senha inválidos.'; msg.className = 'modal-msg error'; }
+            return;
+        }
+
+        salvarSessao({
+            id: conta.id ?? Date.now(),
+            name: conta.name || nomeDoUsuario(conta) || username,
+            plan: conta.plan || 'free',
+            avatar: conta.avatar || null
+        });
+
+        if (msg) { msg.textContent = 'Entrando...'; msg.className = 'modal-msg success'; }
+        setTimeout(() => { window.location.href = 'muhsic.html'; }, 250);
     });
-    if (switchToLogin) switchToLogin.addEventListener('click', e => {
+
+    /* ===== REGISTER ===== */
+    document.getElementById('registerForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
-        closeModal('registerModal');
-        openModal('loginModal');
-    });
+        const msg = document.getElementById('registerMsg');
+        const name  = (document.getElementById('regName').value || '').trim();
+        const email = (document.getElementById('regEmail').value || '').trim();
+        const pass  = document.getElementById('regPass').value || '';
+        const plan  = document.getElementById('regPlan').value || 'free';
 
-    /* ---- Botão de login ---- */
-    const loginBtn = document.getElementById('loginButton');
-    if (loginBtn) loginBtn.addEventListener('click', handleLogin);
+        if (!name || !email || !pass) {
+            if (msg) { msg.textContent = 'Preencha todos os campos.'; msg.className = 'modal-msg error'; }
+            return;
+        }
+        if (pass.length < 4) {
+            if (msg) { msg.textContent = 'A senha precisa ter pelo menos 4 caracteres.'; msg.className = 'modal-msg error'; }
+            return;
+        }
 
-    /* ---- Enter nos campos de login ---- */
-    ['loginUser', 'loginPassword'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('keydown', e => {
-            if (e.key === 'Enter') { e.preventDefault(); handleLogin(); }
+        const lista = listarTodosUsuarios();
+        const alvo = name.toLowerCase();
+        const existe = lista.some(u => nomeDoUsuario(u).toLowerCase() === alvo);
+        if (existe) {
+            if (msg) { msg.textContent = 'Este nome de usuário já está em uso.'; msg.className = 'modal-msg error'; }
+            return;
+        }
+
+        const novo = {
+            id: Date.now(),
+            name,
+            username: name,
+            email,
+            password: pass,
+            plan,
+            avatar: null,
+            createdAt: new Date().toISOString()
+        };
+
+        const locais = carregarUsuariosLocais();
+        locais.push(novo);
+        salvarUsuariosLocais(locais);
+
+        salvarSessao({
+            id: novo.id,
+            name: novo.name,
+            plan: novo.plan,
+            avatar: novo.avatar
         });
-    });
 
-    /* ---- Botões de plano na landing ---- */
-    document.querySelectorAll('.btn-plan').forEach(btn => {
-        btn.addEventListener('click', () => {
-            openModal('registerModal');
-        });
+        if (msg) { msg.textContent = 'Conta criada! Entrando...'; msg.className = 'modal-msg success'; }
+        setTimeout(() => { window.location.href = 'muhsic.html'; }, 450);
     });
+}
 
-});
+/* ============================================================
+   BOOT
+   ============================================================ */
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLanding);
+} else {
+    initLanding();
+}

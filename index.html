@@ -3,252 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Muhsic — Sua música, do seu jeito</title>
+    <title>Muhsic — Entrar</title>
 
-    <!-- Ícones e Fontes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/landing.css">
 </head>
-<body class="landing-body">
+<body>
 
-    <!-- ===== NAVBAR ===== -->
-    <nav class="landing-nav">
-        <a href="#top" class="landing-logo">
-            <img src="https://res.cloudinary.com/oizv8icb/image/upload/v1786581131/Muhsic.png" alt="Muhsic">
-        </a>
-        <div class="landing-nav-links">
-            <a href="#how">Como funciona</a>
-            <a href="#plans">Planos</a>
-            <a href="#about">Sobre</a>
-        </div>
-        <div class="landing-nav-actions">
-            <button class="btn-ghost" id="openLoginBtn">Entrar</button>
-            <button class="btn-primary" id="openRegisterBtn">Criar conta</button>
-        </div>
-    </nav>
+    <div class="landing">
 
-    <!-- ===== HERO ===== -->
-    <header class="hero" id="top">
-        <div class="hero-content">
-            <span class="hero-badge">◈ BETA 0.5</span>
-            <h1>Sua música,<br>do seu jeito.</h1>
-            <p class="hero-sub">
-                Muhsic é o player que se adapta a você. Organize suas playlists, curta seus álbuns favoritos e descubra músicas exclusivas — tudo em um só lugar.
+        <!-- ===== HEADER ===== -->
+        <header class="landing-header">
+            <div class="landing-brand">
+                <img src="https://res.cloudinary.com/oizv8icb/image/upload/v1786581131/Muhsic.png" alt="Muhsic">
+                <span class="version-badge">BETA 0.5</span>
+            </div>
+            <nav class="landing-nav">
+                <a id="navRegister">Criar conta</a>
+                <button class="btn-entrar-header" id="btnHeaderEntrar">Entrar</button>
+            </nav>
+        </header>
+
+        <!-- ===== HERO ===== -->
+        <main class="landing-hero">
+            <h1 class="landing-title">Sua música, do seu jeito. <span>Muhsic.</span></h1>
+            <p class="landing-sub">
+                Um player vintage com vitrola animada, fila inteligente e sua biblioteca
+                inteira na palma da mão. Entre agora e comece a ouvir.
             </p>
-            <div class="hero-actions">
-                <button class="btn-primary btn-large" id="heroRegisterBtn">
-                    Começar agora <i class="fas fa-arrow-right"></i>
+            <div class="landing-cta">
+                <button class="btn-primary" id="btnHeroComecar">
+                    <i class="fas fa-play"></i> Começar agora
                 </button>
-                <button class="btn-ghost btn-large" id="heroLoginBtn">
+                <button class="btn-secondary" id="btnHeroLogin">
                     Já tenho conta
                 </button>
             </div>
-            <p class="hero-note">
-                <i class="fas fa-shield-alt"></i> Grátis para sempre no plano Free
-            </p>
-        </div>
-        <div class="hero-visual">
-            <div class="hero-mockup">
-                <div class="mockup-bar"></div>
-                <div class="mockup-bar"></div>
-                <div class="mockup-bar short"></div>
-                <div class="mockup-card">
-                    <i class="fas fa-play-circle"></i>
-                </div>
-            </div>
-        </div>
-    </header>
+        </main>
 
-    <!-- ===== COMO FUNCIONA ===== -->
-    <section class="how" id="how">
-        <h2 class="section-title">Como funciona</h2>
-        <p class="section-sub">Três passos simples pra começar a ouvir</p>
-        <div class="how-grid">
-            <div class="how-card">
-                <div class="how-icon"><i class="fas fa-user-plus"></i></div>
-                <h3>1. Crie sua conta</h3>
-                <p>Cadastro rápido e sem burocracia. Escolha seu plano e comece.</p>
+        <!-- ===== FEATURES ===== -->
+        <section class="landing-features">
+            <div class="feature-card">
+                <i class="fas fa-compact-disc"></i>
+                <h3>Vitrola animada</h3>
+                <p>Disco girando, braço se movendo, tudo em tempo real conforme a música toca.</p>
             </div>
-            <div class="how-card">
-                <div class="how-icon"><i class="fas fa-music"></i></div>
-                <h3>2. Monte sua biblioteca</h3>
-                <p>Curta músicas, salve álbuns e organize playlists do seu jeito.</p>
+            <div class="feature-card">
+                <i class="fas fa-random"></i>
+                <h3>Aleatório inteligente</h3>
+                <p>Sorteia músicas da biblioteca inteira, não só da playlist atual.</p>
             </div>
-            <div class="how-card">
-                <div class="how-icon"><i class="fas fa-headphones-alt"></i></div>
-                <h3>3. Aperte o play</h3>
-                <p>Player moderno, visualizador animado e controle total do som.</p>
+            <div class="feature-card">
+                <i class="fas fa-layer-group"></i>
+                <h3>Fila automática</h3>
+                <p>As próximas três músicas já ficam engatilhadas ao lado da vitrola.</p>
             </div>
-        </div>
-    </section>
+            <div class="feature-card">
+                <i class="fas fa-expand"></i>
+                <h3>Modo maximizado</h3>
+                <p>Abra o painel lateral e veja o vinil em tamanho grande com a fila embaixo.</p>
+            </div>
+        </section>
 
-    <!-- ===== PLANOS ===== -->
-    <section class="plans" id="plans">
-        <h2 class="section-title">Escolha seu plano</h2>
-        <p class="section-sub">Do gratuito ao premium — você decide</p>
+    </div>
 
-        <div class="plans-grid">
+    <!-- ===== MODAL LOGIN / REGISTER ===== -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-panel">
+            <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
 
-            <!-- FREE -->
-            <div class="plan-card" data-plan="free">
-                <div class="plan-badge free">🟢 Free</div>
-                <h3 class="plan-name">Muhsic Free</h3>
-                <p class="plan-desc">Pra quem tá começando</p>
-                <ul class="plan-features">
-                    <li><i class="fas fa-check"></i> Player básico</li>
-                    <li><i class="fas fa-check"></i> Biblioteca pessoal</li>
-                    <li><i class="fas fa-check"></i> 1 usuário</li>
-                    <li class="disabled"><i class="fas fa-times"></i> Anúncios exibidos</li>
-                    <li class="disabled"><i class="fas fa-times"></i> Sem temas personalizados</li>
-                    <li class="disabled"><i class="fas fa-times"></i> Sem músicas exclusivas</li>
-                </ul>
-                <button class="btn-plan btn-plan-free" data-plan="free">
-                    Começar grátis
-                </button>
+            <div class="modal-tabs">
+                <button class="modal-tab active" id="tabLogin">Entrar</button>
+                <button class="modal-tab" id="tabRegister">Criar conta</button>
             </div>
 
-            <!-- MUHSIC+ -->
-            <div class="plan-card featured" data-plan="plus">
-                <div class="plan-ribbon">Mais popular</div>
-                <div class="plan-badge plus">🟡 Muhsic+</div>
-                <h3 class="plan-name">Muhsic+</h3>
-                <p class="plan-desc">Pra quem quer mais</p>
-                <ul class="plan-features">
-                    <li><i class="fas fa-check"></i> <strong>Sem anúncios</strong></li>
-                    <li><i class="fas fa-check"></i> Temas personalizados</li>
-                    <li><i class="fas fa-check"></i> Músicas exclusivas</li>
-                    <li><i class="fas fa-check"></i> Até 2 usuários</li>
-                    <li><i class="fas fa-check"></i> Player básico</li>
-                </ul>
-                <button class="btn-plan btn-plan-plus" data-plan="plus">
-                    Assinar Muhsic+
-                </button>
+            <!-- LOGIN -->
+            <div id="paneLogin">
+                <h2>Bem-vindo de volta</h2>
+                <p class="modal-sub">Entre com sua conta para ouvir sua biblioteca</p>
+                <form class="modal-form" id="loginForm">
+                    <label class="modal-field">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="loginUser" placeholder="Usuário" required autocomplete="username">
+                    </label>
+                    <label class="modal-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPass" placeholder="Senha" required autocomplete="current-password">
+                    </label>
+                    <button type="submit" class="modal-btn">
+                        <i class="fas fa-sign-in-alt"></i> Entrar
+                    </button>
+                    <p class="modal-msg" id="loginMsg"></p>
+                </form>
             </div>
 
-            <!-- PREMIUM -->
-            <div class="plan-card" data-plan="premium">
-                <div class="plan-badge premium">🟣 Premium</div>
-                <h3 class="plan-name">Muhsic Premium</h3>
-                <p class="plan-desc">Pra quem quer tudo</p>
-                <ul class="plan-features">
-                    <li><i class="fas fa-check"></i> <strong>Tudo do Muhsic+</strong></li>
-                    <li><i class="fas fa-check"></i> Download offline</li>
-                    <li><i class="fas fa-check"></i> Qualidade máxima</li>
-                    <li><i class="fas fa-check"></i> Até 4 usuários</li>
-                    <li><i class="fas fa-check"></i> Suporte prioritário</li>
-                </ul>
-                <button class="btn-plan btn-plan-premium" data-plan="premium">
-                    Assinar Premium
-                </button>
+            <!-- REGISTER -->
+            <div id="paneRegister" class="hidden">
+                <h2>Criar conta</h2>
+                <p class="modal-sub">Leva menos de um minuto</p>
+                <form class="modal-form" id="registerForm">
+                    <label class="modal-field">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="regName" placeholder="Nome de usuário" required>
+                    </label>
+                    <label class="modal-field">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="regEmail" placeholder="E-mail" required>
+                    </label>
+                    <label class="modal-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="regPass" placeholder="Senha (mín. 4)" required minlength="4">
+                    </label>
+                    <label class="modal-field">
+                        <i class="fas fa-crown"></i>
+                        <select id="regPlan">
+                            <option value="free">Plano Free</option>
+                            <option value="plus">Muhsic+</option>
+                            <option value="premium">Premium</option>
+                        </select>
+                    </label>
+                    <button type="submit" class="modal-btn">
+                        <i class="fas fa-user-plus"></i> Criar conta
+                    </button>
+                    <p class="modal-msg" id="registerMsg"></p>
+                </form>
             </div>
 
-        </div>
-    </section>
-
-    <!-- ===== SOBRE ===== -->
-    <section class="about" id="about">
-        <h2 class="section-title">Sobre o Muhsic</h2>
-        <p class="about-text">
-            Muhsic é um projeto fictício desenvolvido para fins acadêmicos. Ele foi criado
-            por <strong>Murilo N.B</strong> como parte do trabalho da faculdade e faz parte
-            do grupo <strong>MPS — MapleProjectSeries</strong>.
-        </p>
-        <p class="about-text">
-            Toda a interface, banco de dados simulado e sistema de planos foram projetados
-            do zero em HTML, CSS e JavaScript puro — sem frameworks.
-        </p>
-    </section>
-
-    <!-- ===== FOOTER ===== -->
-    <footer class="landing-footer">
-        <div class="footer-inner">
-            <div class="footer-brand">
-                <img src="https://res.cloudinary.com/oizv8icb/image/upload/v1786581131/Muhsic.png" alt="Muhsic">
-                <p>Copyright © 2026 Muhsic<br>MPS — MapleProjectSeries</p>
-            </div>
-            <div class="footer-links">
-                <a href="#how">Como funciona</a>
-                <a href="#plans">Planos</a>
-                <a href="#about">Sobre</a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- ===== MODAL: LOGIN ===== -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal">
-            <button class="modal-close" data-close="loginModal"><i class="fas fa-times"></i></button>
-            <div class="modal-logo">
-                <img src="https://res.cloudinary.com/oizv8icb/image/upload/v1786581131/Muhsic.png" alt="Muhsic">
-            </div>
-            <h2>Bem-vindo de volta</h2>
-            <p class="modal-sub">Entre na sua conta Muhsic</p>
-
-            <div class="modal-field">
-                <i class="fas fa-user"></i>
-                <input type="text" id="loginUser" placeholder="Usuário" autocomplete="username">
-            </div>
-            <div class="modal-field">
-                <i class="fas fa-lock"></i>
-                <input type="password" id="loginPassword" placeholder="Senha" autocomplete="current-password">
-            </div>
-
-            <div class="modal-error" id="loginError"></div>
-
-            <button class="btn-primary btn-block" id="loginButton">
-                Entrar <i class="fas fa-arrow-right"></i>
-            </button>
-
-            <p class="modal-switch">
-                Não tem conta?
-                <a href="#" id="switchToRegister">Criar agora</a>
-            </p>
         </div>
     </div>
 
-    <!-- ===== MODAL: REGISTER ===== -->
-    <div class="modal-overlay" id="registerModal">
-        <div class="modal">
-            <button class="modal-close" data-close="registerModal"><i class="fas fa-times"></i></button>
-            <div class="modal-logo">
-                <img src="https://res.cloudinary.com/oizv8icb/image/upload/v1786581131/Muhsic.png" alt="Muhsic">
-            </div>
-            <h2>Criar sua conta</h2>
-            <p class="modal-sub">É rápido, é grátis, é Muhsic</p>
-
-            <div class="modal-field">
-                <i class="fas fa-user"></i>
-                <input type="text" id="registerName" placeholder="Nome de usuário" autocomplete="username">
-            </div>
-            <div class="modal-field">
-                <i class="fas fa-lock"></i>
-                <input type="password" id="registerPass" placeholder="Senha" autocomplete="new-password">
-            </div>
-            <div class="modal-field">
-                <i class="fas fa-lock"></i>
-                <input type="password" id="registerPass2" placeholder="Confirme a senha" autocomplete="new-password">
-            </div>
-
-            <div class="modal-error" id="registerError"></div>
-
-            <button class="btn-primary btn-block" id="registerButton">
-                Criar conta <i class="fas fa-arrow-right"></i>
-            </button>
-
-            <p class="modal-switch">
-                Já tem conta?
-                <a href="#" id="switchToLogin">Entrar</a>
-            </p>
-        </div>
-    </div>
-
-    <!-- ===== SCRIPTS ===== -->
     <script src="js/users.js"></script>
-    <script src="js/register.js"></script>
     <script src="js/login.js"></script>
 </body>
 </html>
