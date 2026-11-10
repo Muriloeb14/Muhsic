@@ -1,0 +1,94 @@
+/* ============================================================
+   MUHSIC — BASE / VARIABLES.CSS
+   Design tokens da identidade "Hi-Fi anos 80".
+   Os temas (themes/themes.css) sobrescrevem estas variáveis.
+   ============================================================ */
+
+:root {
+    /* ---------- Superfícies (café, madeira e escuridão de sala de som) ---------- */
+    --bg-screen:     #160f0b;
+    --bg-panel:      #231711;
+    --bg-panel-2:    #2e1f17;
+    --bg-inset:      #0f0907;
+    --bg-card:       rgba(243, 230, 200, 0.04);
+    --bg-card-hover: rgba(243, 230, 200, 0.08);
+
+    --wood-1: #3a2216;
+    --wood-2: #5a3420;
+    --wood-3: #7b482a;
+    --wood-grain:
+        repeating-linear-gradient(92deg, rgba(0,0,0,0.00) 0 6px, rgba(0,0,0,0.10) 6px 7px, rgba(0,0,0,0.00) 7px 15px, rgba(255,220,170,0.05) 15px 16px),
+        linear-gradient(180deg, var(--wood-3) 0%, var(--wood-2) 45%, var(--wood-1) 100%);
+
+    /* ---------- Texto ---------- */
+    --text-primary:   #f3e6c8;
+    --text-secondary: #c9b48f;
+    --text-muted:     #8c7558;
+    --text-dark:      #33261b;
+
+    /* ---------- Acentos (os temas trocam o --accent) ---------- */
+    --accent:       #e8702a;
+    --accent-hover: #ff8a3d;
+
+    --mustard: #f2b33d;
+    --brick:   #c4452c;
+    --teal:    #2fa39a;
+    --cobalt:  #3a6ea5;
+    --plum:    #8a4a7a;
+    --cream:   #f3e6c8;
+
+    /* ---------- Teclas (teclado bege amarelado) ---------- */
+    --key-top:    #efe5ca;
+    --key-top-2:  #ddd0ae;
+    --key-side:   #b3a47c;
+    --key-edge:   #85775a;
+    --key-text:   #3a2e22;
+    --key-legend: #8a7657;
+
+    /* ---------- Visor LCD âmbar ---------- */
+    --lcd-bg:   #1a1006;
+    --lcd-text: #ffb547;
+    --lcd-dim:  rgba(255, 181, 71, 0.22);
+    --lcd-glow: 0 0 6px rgba(255, 181, 71, 0.55);
+
+    /* ---------- Bordas, raios, sombras ---------- */
+    --border-color:  rgba(243, 230, 200, 0.10);
+    --border-strong: rgba(243, 230, 200, 0.22);
+    --radius-sm: 6px;
+    --radius:    10px;
+    --radius-lg: 16px;
+    --shadow-panel: 0 14px 40px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 240, 210, 0.05);
+    --transition: 0.2s ease;
+
+    /* ---------- Tipografia ---------- */
+    --font:         'Rubik', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-display: 'Bungee', 'Rubik', sans-serif;
+    --font-lcd:     'VT323', ui-monospace, 'Courier New', monospace;
+
+    /* ---------- Medidas do app ---------- */
+    --sidebar-width: 250px;
+    --deck-width:    380px;
+    --app-gap:       12px;
+    --tt-scale:      1;       /* escala da vitrola (ajustada no responsivo) */
+
+    /* ---------- Imagens ---------- */
+    --mfade-url: url('../../assets/img/mark-bars.svg');
+    --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .9 0 0 0 0 .8 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ------------------------------------------------------------
+   Tokens DERIVADOS do acento.
+   Declarados também no <body> porque é nele que o tema troca
+   o --accent; assim estes valores são recalculados por tema.
+   ------------------------------------------------------------ */
+:root, body {
+    --accent-soft: color-mix(in srgb, var(--accent) 20%, transparent);
+    --accent-glow: color-mix(in srgb, var(--accent) 55%, transparent);
+    --accent-dark: color-mix(in srgb, var(--accent) 60%, #000);
+
+    /* Faixas "sunset" dos anos 80 */
+    --stripes-v: linear-gradient(180deg,
+        var(--mustard) 0 25%, var(--accent) 25% 50%, var(--brick) 50% 75%, var(--teal) 75% 100%);
+    --stripes-h: linear-gradient(90deg,
+        var(--mustard) 0 25%, var(--accent) 25% 50%, var(--brick) 50% 75%, var(--teal) 75% 100%);
+}

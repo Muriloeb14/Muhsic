@@ -1,5 +1,5 @@
 /* ============================================================
-   MUHSIC — USERS.JS
+   MUHSIC — DATA / USERS.JS
    Usuários pré-cadastrados do sistema (simulação, sem banco)
    ------------------------------------------------------------
    Estrutura de cada usuário:
@@ -7,7 +7,7 @@
        name    → nome de exibição
        login   → usuário usado para entrar
        pass    → senha
-       plan    → 'free' | 'plus' | 'premium'
+       plan    → 'free' | 'plus' | 'premium'  (ver js/config/plans.js)
        avatar  → URL da imagem (opcional)
    ------------------------------------------------------------
    IMPORTANTE:
@@ -54,69 +54,3 @@ const users = [
     }
 
 ];
-
-/* ============================================================
-   CONFIGURAÇÃO DE PLANOS
-   ============================================================ */
-const plans = {
-
-    free: {
-        id: 'free',
-        label: 'Muhsic Free',
-        icon: '🟢',
-        color: '#1db954',
-        showAds: true,
-        hasThemes: false,
-        hasExclusive: false,
-        maxUsers: 1
-    },
-
-    plus: {
-        id: 'plus',
-        label: 'Muhsic+',
-        icon: '🟡',
-        color: '#FFD700',
-        showAds: false,
-        hasThemes: true,
-        hasExclusive: true,
-        maxUsers: 2
-    },
-
-    premium: {
-        id: 'premium',
-        label: 'Muhsic Premium',
-        icon: '🟣',
-        color: '#a020f0',
-        showAds: false,
-        hasThemes: true,
-        hasExclusive: true,
-        maxUsers: 4
-    }
-
-};
-
-/* ============================================================
-   HELPERS DE USUÁRIO
-   ============================================================ */
-
-/**
- * Busca um usuário pelo login + senha.
- * Retorna o objeto do usuário ou null.
- */
-function findUserByLogin(login, pass) {
-    return users.find(u => u.login === login && u.pass === pass) || null;
-}
-
-/**
- * Busca um usuário pelo ID.
- */
-function findUserById(id) {
-    return users.find(u => u.id === id) || null;
-}
-
-/**
- * Retorna o objeto de configuração do plano.
- */
-function getPlanConfig(planId) {
-    return plans[planId] || plans.free;
-}

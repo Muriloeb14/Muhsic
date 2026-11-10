@@ -1,0 +1,248 @@
+/* ============================================================
+   MUHSIC — PLAYER / TURNTABLE.CSS
+   ------------------------------------------------------------
+   Toca-discos do painel direito.
+   A "stage" tem tamanho fixo de 300×300 e é escalada pela
+   variável --tt-scale (ver base/responsive.css), mantendo a
+   geometria do braço sempre correta.
+
+   Geometria (coordenadas dentro da stage):
+     disco ...... centro (140,150), raio 125
+     pivô braço . (282,34), comprimento 196
+     repouso 6° → agulha fora do disco
+     tocando 24° → agulha sobre os sulcos
+   ============================================================ */
+
+.turntable {
+    position: relative;
+    flex-shrink: 0;
+    align-self: center;
+    width: calc(320px * var(--tt-scale));
+    height: calc(320px * var(--tt-scale));
+    border-radius: 12px;
+    background:
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 3px),
+        linear-gradient(160deg, #3b342d 0%, #231d18 100%);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.07),
+        inset 0 10px 24px rgba(0, 0, 0, 0.55),
+        0 2px 0 rgba(255, 220, 170, 0.15);
+}
+
+.turntable-stage {
+    position: absolute;
+    left: calc(10px * var(--tt-scale));
+    top:  calc(10px * var(--tt-scale));
+    width: 300px;
+    height: 300px;
+    transform: scale(var(--tt-scale));
+    transform-origin: top left;
+}
+
+/* Prato de alumínio sob o disco */
+.platter {
+    position: absolute;
+    left: 8px; top: 18px;
+    width: 264px; height: 264px;
+    border-radius: 50%;
+    background:
+        repeating-radial-gradient(circle, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 4px),
+        radial-gradient(circle, #77726b 0%, #4a4540 65%, #2c2824 100%);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.7), inset 0 0 0 3px #1a1714;
+}
+/* Marcas estroboscópicas na borda do prato */
+.platter::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 50%;
+    background: repeating-conic-gradient(rgba(255, 255, 255, 0.18) 0 2deg, transparent 2deg 6deg);
+    -webkit-mask: radial-gradient(circle, transparent 0 128px, #000 129px);
+    mask: radial-gradient(circle, transparent 0 128px, #000 129px);
+}
+
+/* ---------- Disco ---------- */
+.vinyl-wrapper {
+    position: absolute;
+    left: 15px; top: 25px;
+    width: 250px; height: 250px;
+    border-radius: 50%;
+    z-index: 10;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.vinyl-wrapper:hover { transform: scale(1.02); }
+.vinyl-wrapper:active,
+.vinyl-wrapper.dragging { cursor: grabbing; }
+
+/* Escurece o disco enquanto o anel de volume aparece */
+.vinyl-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: rgba(10, 6, 4, 0.7);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 7;
+}
+.vinyl-wrapper.volume-active::after { opacity: 1; }
+
+/* Disco arrastado por cima: prato acende */
+.vinyl-wrapper.drop-target {
+    transform: scale(1.05) !important;
+    box-shadow: 0 0 0 6px var(--accent), 0 0 40px 6px var(--accent-glow) !important;
+}
+body.is-dragging-disc .vinyl-wrapper { animation: pulseGlow 1s ease-in-out infinite; }
+
+.vinyl {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background:
+        conic-gradient(from 20deg, transparent 0 30deg, rgba(255, 240, 210, 0.12) 45deg, transparent 62deg 205deg, rgba(255, 240, 210, 0.07) 222deg, transparent 240deg),
+        repeating-radial-gradient(circle, #121010 0 2px, #1e1a17 2px 3px);
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.9), 0 6px 14px rgba(0, 0, 0, 0.6);
+    will-change: transform;
+}
+/* Sulco liso entre as faixas e o selo */
+.vinyl::after {
+    content: '';
+    position: absolute;
+    width: 46%; height: 46%;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.75);
+}
+
+/* Selo central com a capa */
+.vinyl-label {
+    position: relative;
+    width: 40%; height: 40%;
+    border-radius: 50%;
+    overflow: hidden;
+    z-index: 3;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px #0c0a09, 0 0 0 5px rgba(242, 179, 61, 0.45);
+}
+.cover {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    pointer-events: none;
+}
+.cover.active { opacity: 1; }
+.vinyl-label::after {               /* pino central */
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 12px; height: 12px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #f4efe3, #8d877c 60%, #3a352f);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    z-index: 5;
+}
+
+/* ---------- Braço ---------- */
+.tonearm {
+    position: absolute;
+    left: 282px; top: 34px;
+    width: 0; height: 0;
+    z-index: 20;
+    pointer-events: none;
+}
+.tonearm-pivot {
+    position: absolute;
+    left: -21px; top: -21px;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    z-index: 2;
+    background: radial-gradient(circle at 35% 30%, #f1ead9 0%, #a39a89 45%, #3a352f 100%);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.65), inset 0 0 0 3px rgba(0, 0, 0, 0.25);
+}
+.tonearm-pivot::after {
+    content: '';
+    position: absolute;
+    inset: 13px;
+    border-radius: 50%;
+    background: #1b1612;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.tonearm-arm {
+    position: absolute;
+    left: -3px; top: 0;
+    width: 6px; height: 196px;
+    z-index: 3;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #8d877c, #f6f1e5 45%, #8d877c);
+    box-shadow: 5px 8px 8px rgba(0, 0, 0, 0.45);
+    transform-origin: 3px 0;
+    transform: rotate(6deg);
+    /* IMPORTANTE: o fim desta transição dispara o play (player-events.js) */
+    transition: transform 0.8s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+.tonearm.active .tonearm-arm { transform: rotate(24deg); }
+
+/* Contrapeso acima do pivô */
+.tonearm-arm::before {
+    content: '';
+    position: absolute;
+    left: -6px; top: -42px;
+    width: 18px; height: 30px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #3a352f, #8d877c 45%, #3a352f);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* Cápsula com agulha */
+.tonearm-head {
+    position: absolute;
+    left: 50%; bottom: -22px;
+    width: 18px; height: 30px;
+    transform: translateX(-50%) rotate(-22deg);
+    border-radius: 3px 3px 5px 5px;
+    background: linear-gradient(180deg, #2b2622, #0f0d0b);
+    box-shadow: inset 0 0 0 2px var(--accent), 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+.tonearm-head::after {              /* agulha acende ao tocar */
+    content: '';
+    position: absolute;
+    left: 50%; bottom: -3px;
+    width: 4px; height: 5px;
+    transform: translateX(-50%);
+    border-radius: 0 0 2px 2px;
+    background: var(--mustard);
+}
+.tonearm.active .tonearm-head::after { box-shadow: 0 0 8px var(--mustard); }
+
+/* ---------- Dica de "solte aqui" ---------- */
+.drop-hint {
+    position: absolute;
+    left: 50%; bottom: -6px;
+    transform: translate(-50%, 8px);
+    z-index: 30;
+    padding: 4px 12px 3px;
+    font-family: var(--font-lcd);
+    font-size: 18px;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    color: var(--lcd-text);
+    text-shadow: var(--lcd-glow);
+    background: var(--lcd-bg);
+    border: 1px solid var(--lcd-text);
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+}
+body.is-dragging-disc .drop-hint { opacity: 1; transform: translate(-50%, 0); }

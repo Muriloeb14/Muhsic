@@ -1,0 +1,175 @@
+/* ============================================================
+   MUHSIC — LAYOUT / SIDEBAR.CSS
+   Painel esquerdo: logo, menu em teclas e o rack de pastas.
+   ============================================================ */
+
+.sidebar {
+    grid-area: sidebar;
+    display: flex;
+    flex-direction: column;
+    padding: 22px 16px 16px;
+    overflow: hidden;
+}
+
+.sidebar-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 10px;
+    padding: 0 4px 18px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+}
+.sidebar-top::after {
+    content: '';
+    position: absolute;
+    left: 4px; bottom: -3px;
+    width: 64px; height: 4px;
+    background: var(--stripes-h);
+    border-radius: 2px;
+}
+
+.logo { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.logo-mark {
+    width: 40px; height: 40px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
+}
+body.is-playing .logo-mark { animation: spin 3s linear infinite; }
+.logo-word {
+    font-family: var(--font-display);
+    font-size: 19px;
+    letter-spacing: 0.03em;
+    color: var(--text-primary);
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- Menu em teclas ---------- */
+.menu-section { margin-bottom: 22px; }
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 0 2px 4px;
+}
+.nav-key {
+    justify-content: flex-start;
+    gap: 14px;
+    padding: 14px 16px 12px;
+    font-size: 13px;
+}
+.nav-key i { width: 18px; text-align: center; color: var(--key-legend); }
+.nav-key.active {
+    --k-top: color-mix(in srgb, var(--accent) 88%, #fff);
+    --k-top-2: var(--accent);
+    --k-side: var(--accent-dark);
+    --k-edge: color-mix(in srgb, var(--accent) 40%, #000);
+    --k-text: #fff7e6;
+    transform: translateY(3px);
+    box-shadow:
+        0 2px 0 var(--k-side),
+        0 3px 0 var(--k-edge),
+        0 5px 10px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.nav-key.active i { color: #fff7e6; }
+.nav-key.active[data-legend]::before { color: rgba(255, 247, 230, 0.75); }
+
+/* ---------- Rack de pastas ---------- */
+.panel-label--rack { margin-top: 4px; }
+
+.rack {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    margin: 0 -6px;
+    padding: 4px 6px 8px;
+    background:
+        linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));
+    border-radius: var(--radius);
+    box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.playlists-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 14px 8px 6px;
+}
+
+.sidebar .pasta-item-sidebar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background var(--transition), transform var(--transition);
+    position: relative;
+}
+.sidebar .pasta-item-sidebar:hover {
+    background: var(--bg-card-hover);
+    transform: translateX(4px);
+}
+
+/* Mini-capa: lombada de disco saindo do rack */
+.sidebar .pasta-mini {
+    position: relative;
+    width: 42px; height: 42px;
+    flex-shrink: 0;
+    border-radius: 3px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-color: #2a1d15;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    isolation: isolate;
+}
+.sidebar .pasta-mini .mini-tint {
+    position: absolute;
+    inset: 0;
+    background: var(--pasta-cor, var(--accent));
+    mix-blend-mode: multiply;
+    opacity: 0.55;
+}
+.sidebar .pasta-mini:not(.has-image) .mini-tint {
+    mix-blend-mode: normal;
+    opacity: 1;
+    background: var(--pasta-grad, var(--accent));
+}
+.sidebar .pasta-mini .mini-shine {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.22) 0%, transparent 40%);
+    z-index: 2;
+}
+.sidebar .pasta-mini .mini-logo { display: none; }
+.sidebar .pasta-mini::after {               /* borda de papel gasto */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--noise);
+    opacity: 0.18;
+    z-index: 3;
+}
+.sidebar .pasta-mini.pasta-mini-curtidas img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+}
+
+.sidebar .pasta-item-sidebar span {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color var(--transition);
+}
+.sidebar .pasta-item-sidebar:hover span { color: var(--text-primary); }

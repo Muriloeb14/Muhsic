@@ -1,0 +1,182 @@
+/* ============================================================
+   MUHSIC — COMPONENTS / VINYL-SHELF.CSS
+   ------------------------------------------------------------
+   Prateleira de discos (detalhe, busca e coleção).
+   Cada disco é arrastável até a vitrola do painel direito.
+   ============================================================ */
+
+.vinyl-shelf {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+    gap: 26px 18px;
+    padding: 22px 18px 26px;
+    margin-bottom: 20px;
+    border-radius: var(--radius);
+    /* "Madeira" da prateleira atrás dos discos */
+    background:
+        linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.15)),
+        var(--wood-grain);
+    box-shadow: inset 0 6px 18px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 240, 210, 0.06);
+}
+
+.shelf-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+    font-family: var(--font-lcd);
+    font-size: 18px;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+}
+.shelf-hint i { color: var(--accent); }
+
+.vinyl-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    transition: transform 0.25s ease;
+}
+.vinyl-item:hover { transform: translateY(-6px); }
+.vinyl-item:active { cursor: grabbing; }
+
+.vinyl-item.dragging-source { opacity: 0.45; }
+.vinyl-item.dragging-source .shelf-vinyl { transform: scale(0.9) rotate(20deg); }
+
+/* ---------- Disco ---------- */
+.vinyl-item .shelf-vinyl {
+    position: relative;
+    width: 100%;
+    max-width: 170px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle, #131010 0 2px, #1f1b18 2px 3px);
+    box-shadow:
+        inset 0 0 24px rgba(0, 0, 0, 0.9),
+        0 10px 20px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 240, 210, 0.05);
+    transition: transform 0.4s ease, box-shadow 0.3s ease;
+}
+.vinyl-item .shelf-vinyl::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 30deg, transparent 0 30deg, rgba(255, 240, 210, 0.13) 45deg, transparent 60deg 210deg, rgba(255, 240, 210, 0.07) 225deg, transparent 240deg);
+    pointer-events: none;
+    z-index: 3;
+}
+.vinyl-item:hover .shelf-vinyl {
+    transform: rotate(25deg) scale(1.04);
+    box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.9), 0 14px 26px rgba(0, 0, 0, 0.7), 0 0 0 3px var(--accent-soft);
+}
+
+.vinyl-item .shelf-cover {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 44%; height: 44%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    overflow: hidden;
+    z-index: 4;
+    box-shadow: 0 0 0 2px #0c0a09, 0 0 0 3px rgba(242, 179, 61, 0.35), 0 3px 8px rgba(0, 0, 0, 0.9);
+}
+.vinyl-item .shelf-cover img { width: 100%; height: 100%; object-fit: cover; }
+.vinyl-item .shelf-cover .placeholder {
+    width: 100%; height: 100%;
+    display: grid;
+    place-items: center;
+    background: var(--accent);
+    color: var(--cream);
+    font-family: var(--font-display);
+    font-size: 20px;
+}
+.vinyl-item .shelf-cover::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 14%; height: 14%;
+    transform: translate(-50%, -50%);
+    background: #0c0a09;
+    border-radius: 50%;
+    z-index: 5;
+}
+
+/* Tocando agora */
+.vinyl-item.current .shelf-vinyl {
+    animation: girarShelf 3s linear infinite;
+    box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.9), 0 10px 20px rgba(0, 0, 0, 0.6), 0 0 0 3px var(--accent), 0 0 24px var(--accent-glow);
+}
+@keyframes girarShelf { to { transform: rotate(360deg); } }
+
+/* ---------- Etiqueta de papel ---------- */
+.vinyl-item .shelf-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+    padding: 7px 8px 6px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--cream), #e3d3ad);
+    border-radius: 3px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.45);
+    transform: rotate(-0.6deg);
+}
+.vinyl-item:nth-child(even) .shelf-info { transform: rotate(0.6deg); }
+.vinyl-item .shelf-info .shelf-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.vinyl-item .shelf-info .shelf-artist {
+    font-size: 11px;
+    color: #6b5440;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.vinyl-item .shelf-info .shelf-duration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-family: var(--font-lcd);
+    font-size: 14px;
+    color: #8a6f52;
+}
+.vinyl-item.current .shelf-info { background: linear-gradient(180deg, var(--mustard), #d69a2a); }
+
+/* ---------- Botão ♥ (lista de curtidos) ---------- */
+.vinyl-like-btn {
+    position: absolute;
+    top: 0; right: 4px;
+    z-index: 10;
+    width: 30px; height: 30px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border-radius: 7px;
+    color: var(--brick);
+    background: linear-gradient(180deg, var(--key-top), var(--key-top-2));
+    border: 1px solid var(--key-edge);
+    box-shadow: 0 3px 0 var(--key-side), 0 4px 8px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.1s ease;
+}
+.vinyl-item:hover .vinyl-like-btn,
+.vinyl-like-btn.liked { opacity: 1; }
+.vinyl-like-btn:active { transform: translateY(3px); box-shadow: 0 0 0 var(--key-side); }
+.vinyl-like-btn svg { width: 15px; height: 15px; fill: currentColor; }

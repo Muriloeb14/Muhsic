@@ -1,0 +1,155 @@
+/* ============================================================
+   MUHSIC — COMPONENTS / KEYCAPS.CSS
+   ------------------------------------------------------------
+   Botões no formato de tecla de teclado antigo (bege amarelado).
+   Uso:
+     <button class="key">Texto</button>
+     Variações: .key--accent  .key--mod  .key--sm  .key--lg  .key--icon
+     Legenda no canto:  data-legend="ESC"
+     Estado ligado:     .active  (acende um LED)
+   ============================================================ */
+
+.key {
+    --key-depth: 5px;
+    --k-top: var(--key-top);
+    --k-top-2: var(--key-top-2);
+    --k-side: var(--key-side);
+    --k-edge: var(--key-edge);
+    --k-text: var(--key-text);
+
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 20px;
+    min-height: 44px;
+
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--k-text);
+    white-space: nowrap;
+
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 18%),
+        linear-gradient(180deg, var(--k-top) 0%, var(--k-top-2) 100%);
+    border: 1px solid var(--k-edge);
+    border-radius: 9px;
+    box-shadow:
+        0 var(--key-depth) 0 var(--k-side),
+        0 calc(var(--key-depth) + 1px) 0 var(--k-edge),
+        0 calc(var(--key-depth) + 8px) 16px rgba(0, 0, 0, 0.45),
+        inset 0 -3px 0 rgba(0, 0, 0, 0.07),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transform: translateY(0);
+    transition: transform 0.07s ease, box-shadow 0.07s ease, filter 0.15s ease;
+}
+
+.key:hover { filter: brightness(1.05); }
+
+.key:active,
+.key.is-pressed {
+    transform: translateY(var(--key-depth));
+    box-shadow:
+        0 0 0 var(--k-side),
+        0 1px 0 var(--k-edge),
+        0 3px 8px rgba(0, 0, 0, 0.4),
+        inset 0 2px 4px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.key i { font-size: 1.05em; }
+
+/* Legenda pequena no canto (como "Esc", "F1"...) */
+.key[data-legend]::before {
+    content: attr(data-legend);
+    position: absolute;
+    top: 4px;
+    left: 7px;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--key-legend);
+    opacity: 0.9;
+}
+
+/* LED de "ligado" */
+.key::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    right: 7px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.15);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.key.has-led::after,
+.key.active::after { opacity: 1; }
+.key.active::after {
+    background: var(--accent-hover);
+    box-shadow: 0 0 8px var(--accent), 0 0 2px #fff inset;
+}
+
+/* Tecla colorida (Enter/Esc dos teclados antigos) */
+.key--accent {
+    --k-top: color-mix(in srgb, var(--accent) 88%, #fff);
+    --k-top-2: var(--accent);
+    --k-side: var(--accent-dark);
+    --k-edge: color-mix(in srgb, var(--accent) 40%, #000);
+    --k-text: #fff7e6;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+}
+.key--accent[data-legend]::before { color: rgba(255, 247, 230, 0.75); }
+
+/* Tecla modificadora (bege mais escuro: Shift, Ctrl...) */
+.key--mod {
+    --k-top: #cdbf9c;
+    --k-top-2: #b9aa84;
+    --k-side: #8f8160;
+    --k-edge: #6d6148;
+}
+
+.key--sm  { padding: 8px 12px; min-height: 34px; font-size: 11px; --key-depth: 4px; border-radius: 7px; }
+.key--lg  { padding: 16px 28px; min-height: 56px; font-size: 15px; --key-depth: 6px; }
+.key--icon { padding: 0; width: 46px; min-width: 46px; height: 46px; font-size: 15px; }
+.key--icon.key--sm { width: 36px; min-width: 36px; height: 36px; }
+.key--block { display: flex; width: 100%; }
+
+.key:disabled,
+.key.is-disabled {
+    filter: grayscale(0.6) brightness(0.8);
+    cursor: not-allowed;
+}
+
+/* Tecla "física" desenhada (usada em tabelas de controles) */
+.kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    height: 28px;
+    padding: 0 8px;
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--key-text);
+    background: linear-gradient(180deg, var(--key-top), var(--key-top-2));
+    border: 1px solid var(--key-edge);
+    border-radius: 6px;
+    box-shadow: 0 3px 0 var(--key-side), 0 4px 0 var(--key-edge), inset 0 1px 0 #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}

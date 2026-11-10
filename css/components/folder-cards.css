@@ -1,0 +1,247 @@
+/* ============================================================
+   MUHSIC — COMPONENTS / FOLDER-CARDS.CSS
+   ------------------------------------------------------------
+   Pastas de vinil da tela Início. No hover a capa desliza para
+   o lado e os discos "saem" de dentro dela, girando.
+   ============================================================ */
+
+.playlists-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 26px 22px;
+    margin-bottom: 40px;
+}
+
+.pasta-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.pasta-card:hover { transform: translateY(-6px) rotate(-0.6deg); }
+
+/* Fundo da pasta = "interior" onde os discos aparecem */
+.pasta-cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 4px;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% 50%, rgba(232, 112, 42, 0.10), transparent 70%),
+        var(--bg-inset);
+    box-shadow:
+        0 12px 26px rgba(0, 0, 0, 0.6),
+        0 2px 0 rgba(255, 240, 210, 0.06),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.pasta-card-curtidas .pasta-cover .curtidas-cover-full {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ---------- Discos que saem da pasta ---------- */
+.pasta-vinyls {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    padding: 12px;
+    display: grid;
+    place-items: center;
+    gap: 8px;
+}
+.pasta-vinyls[data-count="1"] { grid-template-columns: 1fr; }
+.pasta-vinyls[data-count="1"] .pasta-vinyl { max-width: 92%; }
+.pasta-vinyls[data-count="2"] { grid-template-columns: 1fr 1fr; }
+.pasta-vinyls[data-count="3"] { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+.pasta-vinyls[data-count="3"] .pasta-vinyl:nth-child(1) { grid-column: 1 / -1; max-width: 55%; }
+.pasta-vinyls[data-count="4"] { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+
+.pasta-vinyl {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle, #141110 0 2px, #1f1b18 2px 3px);
+    box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.9), 0 6px 14px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+    transform: scale(0.7) rotate(-40deg);
+    opacity: 0;
+    transition: transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.4s ease;
+}
+.pasta-vinyl::after {               /* reflexo de luz no vinil */
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 30deg, transparent 0 30deg, rgba(255, 240, 210, 0.12) 45deg, transparent 60deg 210deg, rgba(255, 240, 210, 0.07) 225deg, transparent 240deg);
+    z-index: 3;
+}
+.pasta-vinyl-label {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 44%; height: 44%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    overflow: hidden;
+    z-index: 4;
+    box-shadow: 0 0 0 2px #0c0a09, 0 0 0 3px rgba(242, 179, 61, 0.35);
+}
+.pasta-vinyl-label img { width: 100%; height: 100%; object-fit: cover; }
+.pasta-vinyl-label::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 14%; height: 14%;
+    transform: translate(-50%, -50%);
+    background: #0c0a09;
+    border-radius: 50%;
+}
+.pasta-vinyl-label .placeholder,
+.pasta-mini .placeholder {
+    width: 100%; height: 100%;
+    display: grid;
+    place-items: center;
+    background: var(--accent);
+    color: var(--cream);
+    font-family: var(--font-display);
+    font-size: 14px;
+}
+
+.pasta-vinyl:nth-child(1) { transition-delay: 0.05s; }
+.pasta-vinyl:nth-child(2) { transition-delay: 0.12s; }
+.pasta-vinyl:nth-child(3) { transition-delay: 0.19s; }
+.pasta-vinyl:nth-child(4) { transition-delay: 0.26s; }
+
+.pasta-card:hover .pasta-vinyl { transform: scale(1) rotate(0); opacity: 1; }
+.pasta-card:hover .pasta-vinyl-label { animation: girarCapa 6s linear infinite; }
+@keyframes girarCapa {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ---------- Capa (sleeve) de papel ---------- */
+.pasta-sleeve {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    background-color: #2a1d15;
+    isolation: isolate;
+    transform-origin: left center;
+    transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.55s ease;
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+        inset -16px 0 26px rgba(0, 0, 0, 0.35);
+}
+.pasta-sleeve.has-image { filter: saturate(0.85) sepia(0.18) contrast(1.05); }
+
+/* Textura de papel + desgaste nas bordas */
+.pasta-sleeve::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    background-image: var(--noise);
+    opacity: 0.22;
+    box-shadow: inset 0 0 18px rgba(60, 30, 10, 0.55);
+    pointer-events: none;
+}
+/* Faixa sunset no rodapé da capa */
+.pasta-sleeve::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 12%;
+    z-index: 6;
+    background: var(--stripes-v);
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+.sleeve-tint {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: var(--pasta-cor, var(--accent));
+    mix-blend-mode: multiply;
+    opacity: 0.55;
+    pointer-events: none;
+}
+.pasta-sleeve:not(.has-image) .sleeve-tint {
+    mix-blend-mode: normal;
+    opacity: 1;
+    background: var(--pasta-grad, var(--accent));
+}
+.sleeve-shine {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(115deg, rgba(255, 245, 220, 0.2) 0%, transparent 35%, transparent 70%, rgba(0, 0, 0, 0.18) 100%);
+    pointer-events: none;
+}
+
+/* Carimbo do "M" no canto da capa */
+.pasta-logo {
+    position: absolute;
+    top: 8%; right: 8%;
+    width: 22%;
+    aspect-ratio: 1;
+    z-index: 7;
+    pointer-events: none;
+    transition: transform 0.4s ease, opacity 0.3s ease;
+}
+.pasta-logo img { display: none; }
+.pasta-logo::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--cream);
+    -webkit-mask: var(--mfade-url) center / contain no-repeat;
+    mask: var(--mfade-url) center / contain no-repeat;
+    opacity: 0.85;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
+}
+
+.pasta-card:hover .pasta-sleeve { transform: translateX(-92%) rotate(-5deg); opacity: 0; }
+.pasta-card:hover .pasta-logo  { opacity: 0; transform: scale(0.6); }
+
+/* ---------- Etiqueta abaixo da pasta ---------- */
+.pasta-info { margin-top: 12px; padding: 0 2px; }
+.pasta-info h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pasta-info p {
+    font-family: var(--font-lcd);
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pasta-card:hover .pasta-info h3 { color: var(--accent); }
+
+/* ---------- Paleta fixa (quando a cor da capa não é lida) ---------- */
+.sleeve-green  { --pasta-cor: #2fa39a; --pasta-cor-escura: #16514c; --pasta-grad: linear-gradient(145deg, #4fc1b6 0%, #2fa39a 45%, #16514c 100%); }
+.sleeve-purple { --pasta-cor: #8a4a7a; --pasta-cor-escura: #44223c; --pasta-grad: linear-gradient(145deg, #b06aa0 0%, #8a4a7a 45%, #44223c 100%); }
+.sleeve-red    { --pasta-cor: #c4452c; --pasta-cor-escura: #5e1f14; --pasta-grad: linear-gradient(145deg, #e0674c 0%, #c4452c 45%, #5e1f14 100%); }
+.sleeve-orange { --pasta-cor: #e8702a; --pasta-cor-escura: #6e3110; --pasta-grad: linear-gradient(145deg, #ff9a52 0%, #e8702a 45%, #6e3110 100%); }
+.sleeve-blue   { --pasta-cor: #3a6ea5; --pasta-cor-escura: #1a3352; --pasta-grad: linear-gradient(145deg, #5b90c8 0%, #3a6ea5 45%, #1a3352 100%); }
+.sleeve-pink   { --pasta-cor: #d46a6a; --pasta-cor-escura: #6a2f2f; --pasta-grad: linear-gradient(145deg, #ee9090 0%, #d46a6a 45%, #6a2f2f 100%); }
+.sleeve-yellow { --pasta-cor: #f2b33d; --pasta-cor-escura: #7a5512; --pasta-grad: linear-gradient(145deg, #ffd27a 0%, #f2b33d 45%, #7a5512 100%); }
+.sleeve-cyan   { --pasta-cor: #6f8f4e; --pasta-cor-escura: #334423; --pasta-grad: linear-gradient(145deg, #93b370 0%, #6f8f4e 45%, #334423 100%); }

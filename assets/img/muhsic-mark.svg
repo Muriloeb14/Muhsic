@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Muhsic — marca: disco de vinil com o "M" em forma de onda sonora -->
+  <defs>
+    <radialGradient id="g" cx="38%" cy="32%" r="75%">
+      <stop offset="0" stop-color="#3a2a20"/>
+      <stop offset="1" stop-color="#140d09"/>
+    </radialGradient>
+  </defs>
+  <circle cx="50" cy="50" r="48" fill="url(#g)"/>
+  <g fill="none" stroke="#f3e6c8" stroke-opacity=".09">
+    <circle cx="50" cy="50" r="44"/><circle cx="50" cy="50" r="40"/>
+    <circle cx="50" cy="50" r="36"/><circle cx="50" cy="50" r="32"/>
+  </g>
+  <path d="M14 30 A44 44 0 0 1 40 8" stroke="#f3e6c8" stroke-opacity=".35" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <circle cx="50" cy="50" r="27" fill="#e8702a"/>
+  <circle cx="50" cy="50" r="27" fill="none" stroke="#f2b33d" stroke-width="2"/>
+  <g fill="#f3e6c8">
+    <rect x="31" y="44" width="4" height="12" rx="2"/>
+    <rect x="37" y="36" width="4" height="28" rx="2"/>
+    <rect x="43" y="40" width="4" height="20" rx="2"/>
+    <rect x="49" y="45" width="4" height="10" rx="2"/>
+    <rect x="55" y="40" width="4" height="20" rx="2"/>
+    <rect x="61" y="36" width="4" height="28" rx="2"/>
+    <rect x="67" y="44" width="4" height="12" rx="2"/>
+  </g>
+</svg>

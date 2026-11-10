@@ -1,0 +1,55 @@
+/* ============================================================
+   MUHSIC — COMPONENTS / LOGIN-ANIMATION.CSS
+   Tela de "boot" exibida por ~2s ao entrar no aparelho.
+   ============================================================ */
+
+.login-animation-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 8500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(ellipse at center, rgba(232, 112, 42, 0.18), transparent 60%),
+        var(--bg-screen);
+}
+.login-animation-overlay.active { display: flex; animation: bootOut 2.2s ease forwards; }
+
+.boot { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.boot-mark {
+    width: 120px; height: 120px;
+    animation: spin 1.4s linear infinite, bootPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.6));
+}
+.boot-title {
+    font-family: var(--font-display);
+    font-size: 42px;
+    color: var(--cream);
+    text-shadow: 4px 4px 0 var(--wood-1);
+    letter-spacing: 0.04em;
+}
+.boot-text { font-size: 22px; letter-spacing: 0.12em; }
+.boot-bar {
+    width: 220px;
+    height: 14px;
+    padding: 2px;
+    background: var(--lcd-bg);
+    border: 1px solid rgba(255, 181, 71, 0.3);
+    border-radius: 3px;
+}
+.boot-bar span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: repeating-linear-gradient(90deg, var(--lcd-text) 0 8px, transparent 8px 10px);
+    box-shadow: var(--lcd-glow);
+    animation: bootLoad 1.7s steps(22) forwards;
+}
+
+@keyframes bootPop  { from { transform: scale(0.3); opacity: 0; } }
+@keyframes bootLoad { to { width: 100%; } }
+@keyframes bootOut  {
+    0%, 85% { opacity: 1; }
+    100%    { opacity: 0; }
+}

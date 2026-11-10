@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Capa da coleção "Discos curtidos" -->
+  <rect width="200" height="200" fill="#f3e6c8"/>
+  <g>
+    <rect y="118" width="200" height="14" fill="#f2b33d"/>
+    <rect y="136" width="200" height="14" fill="#e8702a"/>
+    <rect y="154" width="200" height="14" fill="#c4452c"/>
+    <rect y="172" width="200" height="14" fill="#2fa39a"/>
+  </g>
+  <circle cx="100" cy="88" r="58" fill="#e8702a" opacity=".18"/>
+  <path d="M100 142 C38 104 44 46 100 74 C156 46 162 104 100 142 Z" fill="#c4452c"/>
+  <path d="M100 142 C38 104 44 46 100 74 C156 46 162 104 100 142 Z" fill="none" stroke="#33261b" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M66 82 C66 70 74 64 84 66" stroke="#f3e6c8" stroke-width="5" fill="none" stroke-linecap="round" opacity=".8"/>
+  <rect x="6" y="6" width="188" height="188" fill="none" stroke="#33261b" stroke-opacity=".25" stroke-width="2"/>
+</svg>

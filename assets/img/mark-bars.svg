@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Máscara: só as barras do "M" (usada como carimbo nas capas) -->
+  <g fill="#000">
+    <rect x="8"  y="38" width="9" height="24" rx="4.5"/>
+    <rect x="21" y="18" width="9" height="64" rx="4.5"/>
+    <rect x="34" y="28" width="9" height="44" rx="4.5"/>
+    <rect x="47" y="39" width="9" height="22" rx="4.5"/>
+    <rect x="60" y="28" width="9" height="44" rx="4.5"/>
+    <rect x="73" y="18" width="9" height="64" rx="4.5"/>
+    <rect x="86" y="38" width="9" height="24" rx="4.5"/>
+  </g>
+</svg>

@@ -1,0 +1,45 @@
+/* ============================================================
+   MUHSIC — APP.CSS  (ponto de entrada dos estilos do player)
+   ------------------------------------------------------------
+   Este arquivo NÃO contém regras: apenas importa os módulos
+   na ordem correta da cascata.
+
+   Para adicionar um novo componente:
+     1. Crie o arquivo na pasta adequada (components/, player/...)
+     2. Importe-o aqui ANTES de base/responsive.css
+   ============================================================ */
+
+/* 1. Fundamentos */
+@import url('base/variables.css');
+@import url('base/reset.css');
+@import url('base/effects.css');
+@import url('components/keycaps.css');
+
+/* 2. Estrutura da tela (3 painéis) */
+@import url('layout/app.css');
+@import url('layout/sidebar.css');
+@import url('layout/header.css');
+
+/* 3. Componentes de conteúdo */
+@import url('components/ad-banner.css');
+@import url('components/folder-cards.css');
+@import url('components/vinyl-shelf.css');
+@import url('pages/detail.css');
+@import url('components/search.css');
+@import url('components/login-animation.css');
+
+/* 4. Vitrola (painel direito) */
+@import url('player/deck.css');
+@import url('player/turntable.css');
+@import url('player/queue.css');
+@import url('player/overlays.css');
+
+/* 5. Modais e painéis */
+@import url('components/settings-modal.css');
+@import url('player/max-panel.css');
+
+/* 6. Responsividade (sempre por último entre os módulos) */
+@import url('base/responsive.css');
+
+/* 7. Acabamentos / temas (sobrescrevem as variáveis acima) */
+@import url('themes/themes.css');

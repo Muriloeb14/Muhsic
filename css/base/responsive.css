@@ -1,0 +1,152 @@
+/* ============================================================
+   MUHSIC — BASE / RESPONSIVE.CSS
+   ------------------------------------------------------------
+   Breakpoints do player. Carregado depois dos componentes.
+     > 1400px  layout completo
+     ≤ 1400px  painéis mais estreitos
+     ≤ 1180px  rack vira barra de ícones
+     ≤  900px  vitrola desce para baixo (tablet / celular)
+     ≤  560px  celular
+   Alturas baixas reduzem a vitrola (--tt-scale).
+   ============================================================ */
+
+/* ---------- Telas largas, porém baixas ---------- */
+@media (max-height: 880px) {
+    :root { --tt-scale: 0.86; }
+    .vu { height: 14px; margin-top: 8px; }
+}
+@media (max-height: 780px) {
+    :root { --tt-scale: 0.74; }
+    .deck { gap: 10px; }
+    .vu { display: none; }
+    .deck-queue { min-height: 62px; padding: 6px 10px; }
+    .queue-vinyl { width: 48px; height: 48px; }
+}
+@media (max-height: 680px) {
+    :root { --tt-scale: 0.62; }
+    .deck-head { display: none; }
+}
+
+/* ---------- Painéis mais estreitos ---------- */
+@media (max-width: 1400px) {
+    :root { --sidebar-width: 220px; --deck-width: 350px; }
+    .deck-keys { gap: 8px; padding: 10px 8px 14px; }
+}
+
+/* ---------- Rack vira barra de ícones ---------- */
+@media (max-width: 1180px) {
+    :root { --sidebar-width: 84px; }
+
+    .sidebar { padding: 18px 10px 12px; align-items: stretch; }
+    .sidebar-top { flex-direction: column; padding-bottom: 14px; }
+    .sidebar-top::after { left: 50%; transform: translateX(-50%); }
+    .logo-word, .sidebar .version-badge, .panel-label { display: none; }
+
+    .nav-key { justify-content: center; padding: 14px 0 12px; }
+    .nav-key span { display: none; }
+    .nav-key[data-legend]::before { display: none; }
+
+    .sidebar .pasta-item-sidebar { justify-content: center; padding: 6px 0; }
+    .sidebar .pasta-item-sidebar span { display: none; }
+    .sidebar .pasta-item-sidebar:hover { transform: scale(1.06); }
+    .playlists-section-title { text-align: center; font-size: 8px; padding: 12px 0 4px; letter-spacing: 0.08em; }
+}
+
+@media (max-width: 1040px) {
+    :root { --deck-width: 320px; --tt-scale: 0.82; }
+    .main-header .hud-text { display: none; }
+}
+
+/* ---------- Tablet / celular: vitrola embaixo ---------- */
+@media (max-width: 900px) {
+    :root { --tt-scale: 0.46; --app-gap: 8px; }
+
+    .app {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        grid-template-areas: 'sidebar' 'main' 'deck';
+    }
+
+    /* Rack: barra superior com logo + menu */
+    .sidebar {
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        overflow: visible;
+    }
+    .sidebar-top { flex-direction: row; padding: 0; margin: 0; border: none; }
+    .sidebar-top::after { display: none; }
+    .logo-word { display: inline; font-size: 18px; }
+    .logo-mark { width: 34px; height: 34px; }
+    .menu-section { margin: 0 0 0 auto; }
+    .nav-menu { flex-direction: row; gap: 8px; padding: 0 0 4px; }
+    .nav-key { width: 46px; padding: 0; min-height: 40px; }
+    .rack, .panel-label--rack { display: none; }
+
+    /* Vitrola: faixa inferior compacta */
+    .deck {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-areas:
+            'tt lcd'
+            'tt keys';
+        gap: 10px 14px;
+        padding: 10px 12px;
+        overflow: visible;
+    }
+    .deck-head, .deck-queue, .deck-volume, .vu, .lcd-top { display: none; }
+    .turntable { grid-area: tt; align-self: center; }
+    .lcd { grid-area: lcd; padding: 8px 12px; }
+    .deck-keys { grid-area: keys; padding: 8px; gap: 6px; }
+    .deck-keys .key--icon { height: 38px; font-size: 13px; --key-depth: 4px; }
+    .track-title { font-size: 24px; }
+    .track-artist { font-size: 16px; }
+    .track-info { margin: 0 0 4px; }
+    .drop-hint { font-size: 14px; }
+
+    .main-scroll { padding: 20px 16px 30px; }
+    .playlist-header { flex-direction: column; align-items: flex-start; }
+    .detail-pasta-wrap { width: 140px; height: 140px; }
+
+    /* Modo vitrine empilhado */
+    .max-player-panel { --max-scale: 0.62; overflow-y: auto; align-items: flex-start; }
+    .max-stage { flex-direction: column; align-items: center; }
+    .max-side { max-height: none; }
+}
+
+@media (max-width: 560px) {
+    :root { --tt-scale: 0.36; }
+
+    .logo-word { display: none; }
+    .main-header { padding: 10px 14px; }
+    .hud-chip { display: none; }
+    .user-profile .user-meta-top { display: none; }
+
+    .deck { grid-template-columns: auto minmax(0, 1fr); gap: 8px 10px; }
+    .deck-keys { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; padding: 6px; }
+    .deck-keys .key--icon { height: 34px; font-size: 12px; border-radius: 6px; }
+    .progress-container { gap: 6px; }
+    .time { font-size: 15px; min-width: 28px; }
+    .track-title { font-size: 21px; }
+
+    .playlists-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 14px; }
+    .vinyl-shelf { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 10px; padding: 16px 10px; }
+    .ad-banner .ad-content { flex-wrap: wrap; }
+
+    .max-player-panel { --max-scale: 0.6; padding: 16px; }
+}
+
+@media (max-width: 400px) {
+    :root { --tt-scale: 0.3; }
+    .vinyl-shelf { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .max-player-panel { --max-scale: 0.54; }
+}
+
+/* ---------- Modo vitrine em telas baixas ---------- */
+@media (min-width: 901px) and (max-height: 720px) {
+    .max-player-panel { --max-scale: 0.82; }
+}
+@media (min-width: 901px) and (max-height: 600px) {
+    .max-player-panel { --max-scale: 0.68; }
+}

@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
 
+    <!-- Proteção de rota: sem sessão, volta ao login antes de desenhar a página.
+         (A chave precisa ser igual a STORAGE_KEYS.session em js/config/app.config.js) -->
     <script>
     (function () {
         var raw = null;
@@ -14,46 +16,75 @@
     </script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Muhsic — Player</title>
+    <title>Muhsic — Vitrola</title>
+    <meta name="theme-color" content="#160f0b">
+    <link rel="icon" type="image/svg+xml" href="assets/img/muhsic-mark.svg">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Rubik:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/perso.css">
+    <!-- Todos os estilos do player são importados por css/app.css -->
+    <link rel="stylesheet" href="css/app.css">
 </head>
-<body>
+<body class="app-body crt">
 
+    <!-- Tela de carregamento ao entrar -->
     <div class="login-animation-overlay" id="loginAnimation">
-        <img src="https://res.cloudinary.com/oizv8icb/image/upload/v1786684408/MFADE.png" alt="Muhsic Logo">
+        <div class="boot">
+            <img src="assets/img/muhsic-mark.svg" alt="Muhsic" class="boot-mark">
+            <p class="boot-title">MUHSIC</p>
+            <p class="boot-text lcd-text">CARREGANDO LADO A<span class="blink">_</span></p>
+            <div class="boot-bar"><span></span></div>
+        </div>
     </div>
 
     <div class="app active" id="app">
 
-        <aside class="sidebar">
+        <!-- ======================================================
+             PAINEL 1 — RACK (menu e coleção)
+             ====================================================== -->
+        <aside class="sidebar panel">
             <div class="sidebar-top">
                 <div class="logo">
-                    <img src="https://res.cloudinary.com/oizv8icb/image/upload/v1786581131/Muhsic.png" alt="Muhsic">
+                    <img src="assets/img/muhsic-mark.svg" alt="" class="logo-mark">
+                    <span class="logo-word">MUHSIC</span>
                 </div>
-                <span class="version-badge">BETA 0.5</span>
+                <span class="version-badge">BETA 0.7</span>
             </div>
 
             <div class="menu-section">
-                <h3>Menu</h3>
+                <h3 class="panel-label">Menu</h3>
                 <ul class="nav-menu">
-                    <li class="active" data-page="home"><i class="fas fa-home"></i><span>Início</span></li>
-                    <li data-page="search"><i class="fas fa-search"></i><span>Buscar</span></li>
-                    <li data-page="library"><i class="fas fa-book"></i><span>Sua Biblioteca</span></li>
+                    <li class="key key--block nav-key active" data-page="home" data-legend="F1">
+                        <i class="fas fa-house"></i><span>Início</span>
+                    </li>
+                    <li class="key key--block nav-key" data-page="search" data-legend="F2">
+                        <i class="fas fa-magnifying-glass"></i><span>Buscar</span>
+                    </li>
+                    <li class="key key--block nav-key" data-page="library" data-legend="F3">
+                        <i class="fas fa-box-archive"></i><span>Coleção</span>
+                    </li>
                 </ul>
             </div>
 
-            <div id="sidebarPlaylistsContainer"></div>
+            <h3 class="panel-label panel-label--rack">Rack de discos</h3>
+            <div id="sidebarPlaylistsContainer" class="rack"></div>
         </aside>
 
-        <main class="main">
+        <!-- ======================================================
+             PAINEL 2 — TELA PRINCIPAL
+             ====================================================== -->
+        <main class="main panel">
 
             <header class="main-header">
-                <div class="user-profile" id="userProfile">
+                <div class="hud">
+                    <span class="hud-chip"><span class="rec-dot blink"></span> P1</span>
+                    <span class="hud-text lcd-text">LADO A · 33⅓ RPM</span>
+                </div>
+
+                <div class="user-profile" id="userProfile" tabindex="0">
                     <img src="https://res.cloudinary.com/oizv8icb/image/upload/v1786594773/178054037.jpg"
                          alt="Avatar" class="avatar-img" id="userAvatar">
                     <div class="user-meta-top">
@@ -67,85 +98,104 @@
                             <i class="fas fa-crown"></i> Plano: —
                         </div>
                         <div class="dropdown-item" id="openSettings">
-                            <i class="fas fa-palette"></i> Configurações
+                            <i class="fas fa-palette"></i> Acabamento do aparelho
                         </div>
                         <div class="dropdown-item logout-btn" id="logoutBtn">
-                            <i class="fas fa-sign-out-alt"></i> Sair
+                            <i class="fas fa-power-off"></i> Desligar (sair)
                         </div>
                     </div>
                 </div>
             </header>
 
-            <div class="welcome">
-                <div>
-                    <h1>Bem-vindo(a), <span id="greetingUser">—</span> 👋</h1>
-                    <p>Pronto pra ouvir algo novo?</p>
-                </div>
-            </div>
+            <div class="main-scroll">
 
-            <div class="ad-banner" id="adBanner" style="display:none;">
-                <div class="ad-content">
-                    <i class="fas fa-bullhorn"></i>
-                    <div>
-                        <strong>Anúncio</strong>
-                        <p>Cansado de anúncios? Conheça o <strong>Muhsic+</strong> e ouça sem interrupções.</p>
+                <div class="welcome">
+                    <p class="welcome-kicker lcd-text">&gt; PERFIL CARREGADO</p>
+                    <h1>Bem-vindo(a), <span id="greetingUser">—</span></h1>
+                    <p>Escolha uma pasta, puxe um disco e solte na vitrola.</p>
+                </div>
+
+                <div class="ad-banner" id="adBanner" style="display:none;">
+                    <div class="ad-content">
+                        <span class="ad-tag">Comercial</span>
+                        <div>
+                            <strong>Cansado dos intervalos?</strong>
+                            <p>Com o <strong>Muhsic+</strong> a música não para — e o aparelho ganha 7 acabamentos.</p>
+                        </div>
+                        <button class="key key--sm key--accent ad-cta" id="adUpgradeBtn">Ver planos</button>
                     </div>
-                    <button class="ad-cta" id="adUpgradeBtn">Ver planos</button>
                 </div>
-            </div>
 
-            <section class="page active" id="page-home">
-                <div id="homePlaylistsContainer"></div>
-            </section>
+                <section class="page active" id="page-home">
+                    <div id="homePlaylistsContainer"></div>
+                </section>
 
-            <section class="playlist-detail" id="playlistDetail">
-                <button class="back-btn" id="backToHome"><i class="fas fa-arrow-left"></i></button>
-                <div class="playlist-header" id="detailHeader">
-                    <div class="detail-pasta-wrap" id="detailCover"></div>
-                    <div class="playlist-info">
-                        <h2 id="detailTitle">Playlist</h2>
-                        <div class="playlist-meta" id="detailMeta"></div>
-                        <div class="playlist-actions" id="detailActions">
-                            <button class="like-btn" id="detailLikeBtn" title="Curtir">
-                                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
-                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                                </svg>
-                            </button>
-                            <button class="save-btn" id="detailSaveBtn" title="Salvar">
-                                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <line x1="12" y1="8" x2="12" y2="16"/>
-                                    <line x1="8" y1="12" x2="16" y2="12"/>
-                                </svg>
-                            </button>
+                <section class="playlist-detail" id="playlistDetail">
+                    <button class="key key--sm key--mod back-btn" id="backToHome" data-legend="ESC">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </button>
+                    <div class="playlist-header" id="detailHeader">
+                        <div class="detail-pasta-wrap" id="detailCover"></div>
+                        <div class="playlist-info">
+                            <span class="detail-kicker lcd-text">PASTA</span>
+                            <h2 id="detailTitle">Playlist</h2>
+                            <div class="playlist-meta" id="detailMeta"></div>
+                            <div class="playlist-actions" id="detailActions">
+                                <button class="key key--icon like-btn" id="detailLikeBtn" title="Curtir">
+                                    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                    </svg>
+                                </button>
+                                <button class="key key--icon save-btn" id="detailSaveBtn" title="Salvar">
+                                    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <line x1="12" y1="8" x2="12" y2="16"/>
+                                        <line x1="8" y1="12" x2="16" y2="12"/>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="track-list" id="trackList"></div>
-            </section>
+                    <p class="shelf-hint"><i class="fas fa-hand-pointer"></i> Arraste um disco até a vitrola para tocar</p>
+                    <div class="track-list" id="trackList"></div>
+                </section>
 
-            <section class="page" id="page-search">
-                <div class="section-header"><h2>Buscar</h2></div>
-                <div class="search-bar">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="O que você quer ouvir?" id="searchInput">
-                </div>
-                <div id="searchResults" class="track-list"></div>
-            </section>
+                <section class="page" id="page-search">
+                    <div class="section-header"><h2>Buscar</h2></div>
+                    <div class="search-bar">
+                        <i class="fas fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Música, artista, álbum ou gênero..." id="searchInput">
+                    </div>
+                    <div id="searchResults" class="track-list"></div>
+                </section>
 
-            <section class="page" id="page-library">
-                <div class="section-header">
-                    <h2>Sua Biblioteca</h2>
-                    <a href="#" id="libraryMeta">— discos</a>
-                </div>
-                <div class="track-list" id="libraryList"></div>
-            </section>
-
+                <section class="page" id="page-library">
+                    <div class="section-header">
+                        <h2>Sua coleção</h2>
+                        <a href="#" id="libraryMeta">— discos</a>
+                    </div>
+                    <div class="track-list" id="libraryList"></div>
+                </section>
+            </div>
         </main>
 
-        <div class="player-bar" id="playerBar">
+        <!-- ======================================================
+             PAINEL 3 — VITROLA (player)
+             ====================================================== -->
+        <aside class="deck" id="playerBar">
 
-            <div class="track-center">
+            <div class="deck-head">
+                <span class="deck-brand">MUHSIC <b>HI-FI</b></span>
+                <span class="deck-model">MS-86</span>
+                <span class="deck-led" title="Ligado"></span>
+            </div>
+
+            <!-- Visor LCD -->
+            <div class="lcd">
+                <div class="lcd-row lcd-top">
+                    <span>AGORA TOCANDO</span>
+                    <span class="lcd-badge">ESTÉREO</span>
+                </div>
                 <div class="track-info">
                     <div class="track-title" id="track-title">Nenhum disco</div>
                     <div class="track-artist" id="track-artist">—</div>
@@ -157,203 +207,263 @@
                     </div>
                     <span class="time" id="duration">0:00</span>
                 </div>
+                <div class="vu" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span>
+                </div>
             </div>
 
+            <!-- Toca-discos -->
             <div class="turntable">
-                <div class="tonearm" id="tonearm">
-                    <div class="tonearm-pivot"></div>
-                    <div class="tonearm-arm" id="tonearm-arm">
-                        <div class="tonearm-head"></div>
-                    </div>
-                </div>
+                <div class="turntable-stage">
+                    <div class="platter"></div>
 
-                <div class="vinyl-wrapper" id="vinyl-wrapper" title="Clique: play/pause · Gire: trocar disco · Scroll: volume · Duplo clique: curtir · Botão direito: opções">
-                    <div class="vinyl" id="vinyl">
-                        <div class="vinyl-label">
-                            <img id="cover-a" class="cover active" src="" alt="Capa">
-                            <img id="cover-b" class="cover" src="" alt="Capa">
+                    <div class="tonearm" id="tonearm">
+                        <div class="tonearm-pivot"></div>
+                        <div class="tonearm-arm" id="tonearm-arm">
+                            <div class="tonearm-head"></div>
                         </div>
                     </div>
 
-                    <div class="volume-overlay" id="volume-overlay">
-                        <svg class="volume-ring" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-                            <circle class="ring-track" cx="50" cy="50" r="46" />
-                            <circle class="ring-glow" cx="50" cy="50" r="46"
-                                    id="volume-ring-glow"
-                                    stroke-dasharray="289"
-                                    stroke-dashoffset="289" />
-                            <circle class="ring-fill" cx="50" cy="50" r="46"
-                                    id="volume-ring-fill"
-                                    stroke-dasharray="289"
-                                    stroke-dashoffset="289" />
-                        </svg>
+                    <div class="vinyl-wrapper" id="vinyl-wrapper" title="Clique: tocar/pausar · Gire: trocar disco · Scroll: volume · Duplo clique: curtir · Botão direito: opções">
+                        <div class="vinyl" id="vinyl">
+                            <div class="vinyl-label">
+                                <img id="cover-a" class="cover active" src="" alt="Capa">
+                                <img id="cover-b" class="cover" src="" alt="Capa">
+                            </div>
+                        </div>
 
-                        <svg class="volume-icon-center" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-                        </svg>
-                    </div>
-
-                    <div class="like-overlay" id="like-overlay">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                        </svg>
-                    </div>
-
-                    <div class="context-menu" id="context-menu">
-                        <button class="ctx-btn" id="ctx-random" aria-label="Disco aleatório" title="Tocar disco aleatório">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="16 3 21 3 21 8"/>
-                                <line x1="4" y1="20" x2="21" y2="3"/>
-                                <polyline points="21 16 21 21 16 21"/>
-                                <line x1="15" y1="15" x2="21" y2="21"/>
-                                <line x1="4" y1="4" x2="9" y2="9"/>
+                        <div class="volume-overlay" id="volume-overlay">
+                            <svg class="volume-ring" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                                <circle class="ring-track" cx="50" cy="50" r="46" />
+                                <circle class="ring-glow" cx="50" cy="50" r="46" id="volume-ring-glow" stroke-dasharray="289" stroke-dashoffset="289" />
+                                <circle class="ring-fill" cx="50" cy="50" r="46" id="volume-ring-fill" stroke-dasharray="289" stroke-dashoffset="289" />
                             </svg>
-                        </button>
-
-                        <button class="ctx-btn" id="ctx-maximize" aria-label="Maximizar player" title="Maximizar player">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="15 3 21 3 21 9"/>
-                                <polyline points="9 21 3 21 3 15"/>
-                                <line x1="21" y1="3" x2="14" y2="10"/>
-                                <line x1="3" y1="21" x2="10" y2="14"/>
+                            <svg class="volume-icon-center" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                             </svg>
-                        </button>
+                        </div>
+
+                        <div class="like-overlay" id="like-overlay">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                            </svg>
+                        </div>
+
+                        <div class="context-menu" id="context-menu">
+                            <button class="ctx-btn" id="ctx-random" aria-label="Disco aleatório" title="Tocar disco aleatório">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
+                                    <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
+                                    <line x1="4" y1="4" x2="9" y2="9"/>
+                                </svg>
+                            </button>
+                            <button class="ctx-btn" id="ctx-maximize" aria-label="Maximizar player" title="Maximizar player">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+                                    <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
 
+                    <div class="drop-hint"><i class="fas fa-arrow-down"></i> SOLTE O DISCO AQUI</div>
                 </div>
             </div>
 
-        </div>
+            <!-- Fila -->
+            <div class="deck-queue">
+                <span class="deck-label">Próximos</span>
+                <div class="queue-stack" id="queueStack"></div>
+            </div>
 
+            <!-- Teclado da vitrola -->
+            <div class="deck-keys">
+                <button class="key key--icon key--mod" id="deckPrev" title="Faixa anterior (←)"><i class="fas fa-backward-step"></i></button>
+                <button class="key key--icon key--accent deck-play" id="deckPlay" title="Tocar / pausar (Espaço)">
+                    <i class="fas fa-play icon-play"></i><i class="fas fa-pause icon-pause"></i>
+                </button>
+                <button class="key key--icon key--mod" id="deckNext" title="Próxima faixa (→)"><i class="fas fa-forward-step"></i></button>
+                <button class="key key--icon has-led" id="deckShuffle" title="Disco aleatório"><i class="fas fa-shuffle"></i></button>
+                <button class="key key--icon" id="deckLike" title="Curtir disco"><i class="fas fa-heart"></i></button>
+                <button class="key key--icon" id="deckMax" title="Modo vitrine"><i class="fas fa-expand"></i></button>
+            </div>
+
+            <div class="deck-volume">
+                <button class="key key--icon key--sm key--mod" id="deckVolDown" title="Diminuir volume"><i class="fas fa-minus"></i></button>
+                <div class="volume-meter" id="volumeMeter" aria-label="Volume">
+                    <span class="volume-meter-fill"></span>
+                </div>
+                <button class="key key--icon key--sm key--mod" id="deckVolUp" title="Aumentar volume"><i class="fas fa-plus"></i></button>
+            </div>
+        </aside>
+
+        <!-- ======================================================
+             MODO VITRINE (player maximizado)
+             ====================================================== -->
         <aside class="max-player-panel" id="maxPlayerPanel" aria-hidden="true">
+            <div class="max-stage">
 
-            <div class="max-turntable">
-                <div class="max-tonearm" id="maxTonearm">
-                    <div class="max-tonearm-pivot"></div>
-                    <div class="max-tonearm-arm" id="maxTonearmArm">
-                        <div class="max-tonearm-head"></div>
-                    </div>
-                </div>
+                <div class="max-turntable">
+                    <div class="max-platter"></div>
 
-                <div class="max-vinyl-wrapper" id="maxVinylWrapper">
-                    <div class="max-vinyl" id="maxVinyl">
-                        <div class="max-vinyl-label">
-                            <img id="maxCover" src="" alt="Capa">
+                    <div class="max-tonearm" id="maxTonearm">
+                        <div class="max-tonearm-pivot"></div>
+                        <div class="max-tonearm-arm" id="maxTonearmArm">
+                            <div class="max-tonearm-head"></div>
                         </div>
                     </div>
 
-                    <div class="max-volume-overlay" id="maxVolumeOverlay">
-                        <svg class="volume-ring" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-                            <circle class="ring-track" cx="50" cy="50" r="46" />
-                            <circle class="ring-glow" cx="50" cy="50" r="46"
-                                    id="maxVolumeRingGlow"
-                                    stroke-dasharray="289"
-                                    stroke-dashoffset="289" />
-                            <circle class="ring-fill" cx="50" cy="50" r="46"
-                                    id="maxVolumeRingFill"
-                                    stroke-dasharray="289"
-                                    stroke-dashoffset="289" />
-                        </svg>
+                    <div class="max-vinyl-wrapper" id="maxVinylWrapper">
+                        <div class="max-vinyl" id="maxVinyl">
+                            <div class="max-vinyl-label">
+                                <img id="maxCover" src="" alt="Capa">
+                            </div>
+                        </div>
 
-                        <svg class="volume-icon-center" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-                        </svg>
-                    </div>
-
-                    <div class="max-like-overlay" id="maxLikeOverlay">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                        </svg>
-                    </div>
-
-                    <div class="max-context-menu" id="maxContextMenu">
-                        <button class="max-ctx-btn" id="maxCtxRandom" aria-label="Disco aleatório" title="Disco aleatório">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="16 3 21 3 21 8"/>
-                                <line x1="4" y1="20" x2="21" y2="3"/>
-                                <polyline points="21 16 21 21 16 21"/>
-                                <line x1="15" y1="15" x2="21" y2="21"/>
-                                <line x1="4" y1="4" x2="9" y2="9"/>
+                        <div class="max-volume-overlay" id="maxVolumeOverlay">
+                            <svg class="volume-ring" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                                <circle class="ring-track" cx="50" cy="50" r="46" />
+                                <circle class="ring-glow" cx="50" cy="50" r="46" id="maxVolumeRingGlow" stroke-dasharray="289" stroke-dashoffset="289" />
+                                <circle class="ring-fill" cx="50" cy="50" r="46" id="maxVolumeRingFill" stroke-dasharray="289" stroke-dashoffset="289" />
                             </svg>
-                        </button>
-
-                        <button class="max-ctx-btn" id="maxCtxMinimize" aria-label="Minimizar" title="Minimizar">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="4 14 10 14 10 20"/>
-                                <polyline points="20 10 14 10 14 4"/>
-                                <line x1="14" y1="10" x2="21" y2="3"/>
-                                <line x1="3" y1="21" x2="10" y2="14"/>
+                            <svg class="volume-icon-center" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.250 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.850-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                             </svg>
-                        </button>
+                        </div>
+
+                        <div class="max-like-overlay" id="maxLikeOverlay">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                            </svg>
+                        </div>
+
+                        <div class="max-context-menu" id="maxContextMenu">
+                            <button class="max-ctx-btn" id="maxCtxRandom" aria-label="Disco aleatório" title="Disco aleatório">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
+                                    <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
+                                    <line x1="4" y1="4" x2="9" y2="9"/>
+                                </svg>
+                            </button>
+                            <button class="max-ctx-btn" id="maxCtxMinimize" aria-label="Minimizar" title="Minimizar">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/>
+                                    <line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="max-player-info">
-                <div class="max-title" id="maxTitle">—</div>
-                <div class="max-artist" id="maxArtist">—</div>
-            </div>
+                <div class="max-side">
+                    <button class="key key--sm key--mod max-close" id="maxClose" data-legend="ESC">
+                        <i class="fas fa-compress"></i> Fechar vitrine
+                    </button>
 
-            <div class="max-player-next-title">
-                <i class="fas fa-list-ul"></i> A seguir
+                    <div class="max-player-info">
+                        <span class="lcd-text max-kicker">AGORA TOCANDO</span>
+                        <div class="max-title" id="maxTitle">—</div>
+                        <div class="max-artist" id="maxArtist">—</div>
+                    </div>
+
+                    <div class="max-player-next-title">
+                        <i class="fas fa-layer-group"></i> A seguir
+                    </div>
+                    <div class="max-player-next" id="maxNextList"></div>
+                </div>
             </div>
-            <div class="max-player-next" id="maxNextList"></div>
         </aside>
 
     </div>
 
     <audio id="audio" preload="metadata"></audio>
 
+    <!-- ======================================================
+         ACABAMENTO DO APARELHO (temas)
+         ====================================================== -->
     <div class="settings-overlay" id="settingsModal">
         <div class="settings-panel">
-            <button class="settings-close" id="closeSettings"><i class="fas fa-times"></i></button>
-            <h2><i class="fas fa-palette"></i> Configurações</h2>
-            <p class="settings-sub">Personalize seu Muhsic do seu jeito</p>
+            <div class="settings-titlebar">
+                <span class="settings-stripes"></span>
+                <h2>Acabamento do aparelho</h2>
+                <button class="key key--icon key--sm key--mod settings-close" id="closeSettings" aria-label="Fechar" data-legend="ESC">
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </div>
 
-            <div class="settings-section">
-                <h3>Tema de cores</h3>
-                <div class="theme-grid" id="themeGrid">
-                    <button class="theme-swatch" data-theme="default" title="Padrão Muhsic">
-                        <span class="swatch-color" style="background:#1ed760;"></span>
-                        <span>Padrão</span>
-                    </button>
-                    <button class="theme-swatch" data-theme="light" title="Claro">
-                        <span class="swatch-color" style="background:#ffffff;"></span>
-                        <span>Claro</span>
-                    </button>
-                    <button class="theme-swatch" data-theme="red" title="Vermelho">
-                        <span class="swatch-color" style="background:#e63946;"></span>
-                        <span>Vermelho</span>
-                    </button>
-                    <button class="theme-swatch" data-theme="blue" title="Azul">
-                        <span class="swatch-color" style="background:#457b9d;"></span>
-                        <span>Azul</span>
-                    </button>
-                    <button class="theme-swatch" data-theme="purple" title="Roxo">
-                        <span class="swatch-color" style="background:#a020f0;"></span>
-                        <span>Roxo</span>
-                    </button>
-                    <button class="theme-swatch" data-theme="green" title="Verde">
-                        <span class="swatch-color" style="background:#2ecc71;"></span>
-                        <span>Verde</span>
-                    </button>
-                    <button class="theme-swatch" data-theme="orange" title="Laranja">
-                        <span class="swatch-color" style="background:#f39c12;"></span>
-                        <span>Laranja</span>
-                    </button>
-                </div>
+            <div class="settings-body">
+                <p class="settings-sub">Escolha a cor do seu Muhsic. A escolha fica salva no seu perfil.</p>
 
-                <div class="settings-locked" id="settingsLocked" style="display:none;">
-                    <i class="fas fa-lock"></i>
-                    <p>Temas personalizados são exclusivos dos planos <strong>Muhsic+</strong> e <strong>Premium</strong>.</p>
+                <div class="settings-section">
+                    <div class="theme-grid" id="themeGrid">
+                        <button class="key theme-swatch" data-theme="default" title="Sunset">
+                            <span class="swatch-color" style="background:#e8702a;"></span><span>Sunset</span>
+                        </button>
+                        <button class="key theme-swatch" data-theme="light" title="Papel">
+                            <span class="swatch-color" style="background:#f3e6c8;"></span><span>Papel</span>
+                        </button>
+                        <button class="key theme-swatch" data-theme="red" title="Cereja">
+                            <span class="swatch-color" style="background:#d2364b;"></span><span>Cereja</span>
+                        </button>
+                        <button class="key theme-swatch" data-theme="blue" title="Cobalto">
+                            <span class="swatch-color" style="background:#3f7fc4;"></span><span>Cobalto</span>
+                        </button>
+                        <button class="key theme-swatch" data-theme="purple" title="Vinil">
+                            <span class="swatch-color" style="background:#a65597;"></span><span>Vinil</span>
+                        </button>
+                        <button class="key theme-swatch" data-theme="green" title="Oliva">
+                            <span class="swatch-color" style="background:#2fa39a;"></span><span>Oliva</span>
+                        </button>
+                        <button class="key theme-swatch" data-theme="orange" title="Âmbar">
+                            <span class="swatch-color" style="background:#f2b33d;"></span><span>Âmbar</span>
+                        </button>
+                    </div>
+
+                    <div class="settings-locked" id="settingsLocked" style="display:none;">
+                        <i class="fas fa-lock"></i>
+                        <p>Os acabamentos são exclusivos dos planos <strong>Muhsic+</strong> e <strong>Premium</strong>.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="js/users.js"></script>
-    <script src="js/musics.js"></script>
-    <script src="js/login.js"></script>
-    <script src="js/script.js"></script>
+    <!-- ===== SCRIPTS (a ordem importa: cada camada usa a anterior) ===== -->
+
+    <!-- 1. Configuração -->
+    <script src="js/config/app.config.js"></script>
+    <script src="js/config/plans.js"></script>
+
+    <!-- 2. Dados -->
+    <script src="js/data/songs.js"></script>
+
+    <!-- 3. Núcleo (regras sem interface) -->
+    <script src="js/core/storage.js"></script>
+    <script src="js/core/utils.js"></script>
+    <script src="js/core/session.js"></script>
+    <script src="js/core/library.js"></script>
+
+    <!-- 4. Aplicação -->
+    <script src="js/app/state.js"></script>
+    <script src="js/app/colors.js"></script>
+    <script src="js/app/vinyl.js"></script>
+    <script src="js/app/player.js"></script>
+    <script src="js/app/queue.js"></script>
+    <script src="js/app/likes.js"></script>
+    <script src="js/app/player-events.js"></script>
+    <script src="js/app/max-panel.js"></script>
+    <script src="js/app/views/cards.js"></script>
+    <script src="js/app/views/home.js"></script>
+    <script src="js/app/views/sidebar.js"></script>
+    <script src="js/app/views/detail.js"></script>
+    <script src="js/app/views/shelf.js"></script>
+    <script src="js/app/navigation.js"></script>
+    <script src="js/app/themes.js"></script>
+    <script src="js/app/user-ui.js"></script>
+
+    <!-- 5. Inicialização (sempre por último) -->
+    <script src="js/app/main.js"></script>
 </body>
 </html>

@@ -1,0 +1,49 @@
+/* ============================================================
+   MUHSIC — COMPONENTS / AD-BANNER.CSS
+   Intervalo comercial fictício (somente plano Free).
+   ============================================================ */
+
+.ad-banner {
+    margin-bottom: 28px;
+    padding: 16px 18px;
+    border-radius: var(--radius);
+    background:
+        repeating-linear-gradient(-45deg, rgba(0,0,0,0.12) 0 10px, transparent 10px 20px),
+        linear-gradient(90deg, var(--plum), var(--brick));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+.ad-banner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0 1px, transparent 1px 3px);
+    pointer-events: none;
+}
+
+.ad-banner .ad-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.ad-tag {
+    flex-shrink: 0;
+    font-family: var(--font-lcd);
+    font-size: 17px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--lcd-text);
+    background: var(--lcd-bg);
+    padding: 3px 10px 2px;
+    border-radius: 3px;
+    text-shadow: var(--lcd-glow);
+    animation: blink 1.4s steps(2, start) infinite;
+}
+.ad-banner .ad-content > div { flex: 1; min-width: 0; }
+.ad-banner .ad-content strong { color: #fff7e6; font-size: 14px; }
+.ad-banner .ad-content p { font-size: 13px; color: rgba(255, 247, 230, 0.85); margin-top: 2px; }
+.ad-cta { flex-shrink: 0; }

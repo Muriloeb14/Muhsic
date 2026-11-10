@@ -1,0 +1,11 @@
+/* ============================================================
+   MUHSIC — SITE.CSS  (ponto de entrada dos estilos da landing)
+   Usado por index.html. Compartilha os tokens e as teclas com
+   o player (css/app.css) para manter a mesma identidade.
+   ============================================================ */
+
+@import url('base/variables.css');
+@import url('base/reset.css');
+@import url('base/effects.css');
+@import url('components/keycaps.css');
+@import url('pages/landing.css');

@@ -1,0 +1,625 @@
+================================================================================
+                        MUHSIC — ARQUITETURA DO PROJETO
+                     Versão BETA 0.7  ·  MPS — MapleProjectSeries
+================================================================================
+
+SUMÁRIO
+  1. Visão geral
+  2. Princípios da arquitetura
+  3. Árvore completa de arquivos
+  4. Camadas e dependências
+  5. Ordem de carregamento dos scripts
+  6. Descrição de cada arquivo JavaScript
+  7. Organização do CSS
+  8. Modelos de dados
+  9. Persistência (localStorage)
+ 10. Fluxos principais
+ 11. Guia: como adicionar novas funcionalidades
+ 12. Convenções de código
+ 13. Limitações conhecidas
+
+
+================================================================================
+1. VISÃO GERAL
+================================================================================
+
+O Muhsic é uma aplicação web estática (sem servidor, sem build, sem framework)
+composta por duas páginas:
+
+  index.html   →  Página inicial. Apresenta o projeto e abre o modal de
+                  login / cadastro. Ao entrar, salva a sessão e redireciona.
+
+  muhsic.html  →  O player. Só abre com uma sessão válida. Contém a barra
+                  lateral, as telas (Início, Buscar, Biblioteca, Detalhe),
+                  a vitrola, o painel maximizado e o modal de configurações.
+
+Mídias (músicas, capas, logos, sons) ficam hospedadas no Cloudinary. Os
+"bancos de dados" são arquivos .js com arrays. Preferências do usuário ficam
+no localStorage do navegador.
+
+    ┌────────────────────┐      login ok       ┌────────────────────────┐
+    │     index.html     │ ──────────────────▶ │      muhsic.html       │
+    │  landing + modal   │   (salva sessão)    │   player / biblioteca  │
+    └────────────────────┘ ◀────────────────── └────────────────────────┘
+                                 logout / sem sessão
+
+
+================================================================================
+2. PRINCÍPIOS DA ARQUITETURA
+================================================================================
+
+  • SEPARAÇÃO EM CAMADAS
+      config → data → core → app/pages → main
+      Cada camada só usa as camadas anteriores.
+
+  • UMA RESPONSABILIDADE POR ARQUIVO
+      Ex.: queue.js só cuida da fila; themes.js só cuida dos temas.
+
+  • FONTE ÚNICA DA VERDADE
+      Planos só em plans.js; URLs e números "mágicos" só em app.config.js;
+      leitura do catálogo só em core/library.js; localStorage só via Store.
+
+  • SEM ETAPA DE BUILD
+      Scripts clássicos (<script src>) compartilham o escopo global. Isso
+      permite abrir o index.html direto do disco (file://), algo que
+      módulos ES (import/export) não permitem sem um servidor.
+
+  • TROCA FÁCIL DO "BACKEND"
+      Para usar uma API real no futuro, basta substituir js/data/ e
+      js/core/storage.js; a interface não precisa mudar.
+
+
+================================================================================
+3. ÁRVORE COMPLETA DE ARQUIVOS
+================================================================================
+
+muhsic/
+│
+├── index.html ................ Landing page + modal de login/cadastro
+├── muhsic.html ............... Player (app principal)
+├── README.md ................. Apresentação do projeto
+├── ARQUITETURA.txt ........... Este documento
+├── CHANGELOG.md .............. Histórico de versões
+├── .editorconfig ............. Padrão de indentação/encoding para editores
+├── .gitattributes ............ Normalização de fim de linha no Git
+├── .gitignore ................ Arquivos ignorados pelo Git
+│
+├── assets/
+│   └── img/
+│       ├── muhsic-mark.svg ... Logo (vinil com o "M" em onda sonora) + favicon
+│       ├── mark-bars.svg ..... Máscara do "M" usada como carimbo nas capas
+│       └── liked-cover.svg ... Capa da coleção "Discos curtidos"
+│
+├── css/
+│   ├── site.css .............. ENTRADA da landing: só contém @import
+│   ├── app.css ............... ENTRADA do player: só contém @import, em ordem
+│   │
+│   ├── base/
+│   │   ├── variables.css ..... Design tokens: cores 80s, madeira, teclas, LCD,
+│   │   │                       fontes, medidas (--sidebar/--deck/--tt-scale)
+│   │   ├── reset.css ......... Reset comum às duas páginas, barra de rolagem
+│   │   ├── effects.css ....... Scanlines de CRT, vinheta, granulado, .blink
+│   │   └── responsive.css .... Todos os @media do player (carregado por último)
+│   │
+│   ├── layout/
+│   │   ├── app.css ........... Grade de 3 painéis, .panel (parafusos), .page
+│   │   ├── sidebar.css ....... RACK: logo, menu em teclas, mini-pastas
+│   │   └── header.css ........ TELA: HUD, perfil, dropdown, boas-vindas
+│   │
+│   ├── components/
+│   │   ├── keycaps.css ....... Teclas de teclado antigo (.key e variações)
+│   │   ├── ad-banner.css ..... "Comercial" fictício (plano Free)
+│   │   ├── folder-cards.css .. Pastas de vinil (capa de papel) + cores .sleeve-*
+│   │   ├── vinyl-shelf.css ... Prateleira de madeira com discos arrastáveis
+│   │   ├── search.css ........ Busca em formato de visor LCD
+│   │   ├── login-animation.css Tela de "boot" ao entrar
+│   │   └── settings-modal.css  Janela "Acabamento do aparelho" (temas)
+│   │
+│   ├── player/
+│   │   ├── deck.css .......... VITROLA: placa, visor LCD, VU, fila, teclado,
+│   │   │                       medidor de volume
+│   │   ├── turntable.css ..... Toca-discos: prato, vinil, selo, braço
+│   │   ├── queue.css ......... Discos da fila (clicáveis)
+│   │   ├── overlays.css ...... Anel de volume, animação ♥, menu de contexto
+│   │   └── max-panel.css ..... Modo vitrine (vitrola grande em tela cheia)
+│   │
+│   ├── pages/
+│   │   ├── landing.css ....... Landing (tela título, seções, modal de perfil)
+│   │   └── detail.css ........ Página de detalhe de pasta
+│   │
+│   └── themes/
+│       └── themes.css ........ body[data-theme="..."] — 7 acabamentos
+│
+└── js/
+    ├── config/
+    │   ├── app.config.js ..... APP, STORAGE_KEYS, ASSETS, PLAYER, THEMES
+    │   └── plans.js .......... PLANS + getPlanConfig()
+    │
+    ├── data/
+    │   ├── users.js .......... Contas pré-cadastradas
+    │   └── songs.js .......... Catálogo de músicas (baseSongs)
+    │
+    ├── core/                   (regras de negócio, sem tocar no DOM)
+    │   ├── storage.js ........ Store: get/set/remove seguro no localStorage
+    │   ├── utils.js .......... $, formatTime, escapeHTML, shuffle...
+    │   ├── session.js ........ salvarSessao, requireSession, handleLogout
+    │   ├── auth.js ........... Validação de login e cadastro de contas
+    │   └── library.js ........ Visibilidade, agrupamento e busca no catálogo
+    │
+    ├── pages/
+    │   └── landing.js ........ Interface do modal de login/cadastro
+    │
+    └── app/                    (somente muhsic.html)
+        ├── state.js .......... Sessão atual, estado do player, refs de DOM
+        ├── colors.js ......... Cor dominante da capa → cor da pasta
+        ├── vinyl.js .......... Rotação do vinil (rAF) e matemática do giro
+        ├── player.js ......... Tocar, pausar, próxima, anterior, volume
+        ├── queue.js .......... Fila automática + lista "A seguir"
+        ├── likes.js .......... Curtidas (com persistência por usuário)
+        ├── player-events.js .. Gestos no vinil compacto + eventos do <audio>
+        ├── max-panel.js ...... Painel maximizado e seus gestos
+        ├── navigation.js ..... Menu, voltar, dropdown, busca, teclado
+        ├── themes.js ......... Aplicar/salvar tema + modal de configurações
+        ├── user-ui.js ........ Nome/plano na tela, anúncio, animação de entrada
+        ├── main.js ........... Inicialização (sempre o último script)
+        │
+        └── views/
+            ├── cards.js ...... HTML das pastas (card e item da sidebar)
+            ├── home.js ....... Tela Início
+            ├── sidebar.js .... Barra lateral
+            ├── detail.js ..... Página de detalhe
+            └── shelf.js ...... Prateleira, Biblioteca e resultados da busca
+
+
+================================================================================
+4. CAMADAS E DEPENDÊNCIAS
+================================================================================
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │ 5. INICIALIZAÇÃO       app/main.js                                  │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │ 4. INTERFACE           app/*.js, app/views/*.js   |  pages/landing  │
+  │    (lê/escreve DOM)                                                 │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │ 3. NÚCLEO              core/storage · utils · session · auth ·      │
+  │    (regras puras)      library                                      │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │ 2. DADOS               data/users.js · data/songs.js                │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │ 1. CONFIGURAÇÃO        config/app.config.js · config/plans.js       │
+  └─────────────────────────────────────────────────────────────────────┘
+        ▲ cada camada pode usar apenas as que estão ABAIXO dela
+
+  Dependências dentro de app/ (quem chama quem, simplificado):
+
+     main ──▶ state, themes, user-ui, likes, player-events, max-panel,
+              navigation, views/*, player, queue
+
+     player-events ─┐
+     max-panel ─────┼──▶ player ──▶ queue ──▶ views/shelf (updateHighlight)
+     navigation ────┘       │
+                            └──▶ vinyl (rotação), colors (via views)
+
+     likes ──▶ views/home, views/sidebar, views/detail
+     views/* ──▶ cards ──▶ colors
+
+
+================================================================================
+5. ORDEM DE CARREGAMENTO DOS SCRIPTS
+================================================================================
+
+Como os scripts compartilham o escopo global, a ORDEM IMPORTA: um arquivo
+pode usar, no momento em que é lido, apenas o que veio antes. Funções só são
+CHAMADAS depois que todos carregam (no evento DOMContentLoaded), então
+módulos do mesmo nível podem se chamar entre si.
+
+  index.html                         muhsic.html
+  ─────────────────────────          ─────────────────────────────────
+  1  config/app.config.js            1  config/app.config.js
+  2  config/plans.js                 2  config/plans.js
+  3  data/users.js                   3  data/songs.js
+  4  core/storage.js                 4  core/storage.js
+  5  core/utils.js                   5  core/utils.js
+  6  core/session.js                 6  core/session.js
+  7  core/auth.js                    7  core/library.js
+  8  pages/landing.js                8  app/state.js
+                                     9  app/colors.js
+                                    10  app/vinyl.js
+                                    11  app/player.js
+                                    12  app/queue.js
+                                    13  app/likes.js
+                                    14  app/player-events.js
+                                    15  app/max-panel.js
+                                    16  app/views/cards.js
+                                    17  app/views/home.js
+                                    18  app/views/sidebar.js
+                                    19  app/views/detail.js
+                                    20  app/views/shelf.js
+                                    21  app/navigation.js
+                                    22  app/themes.js
+                                    23  app/user-ui.js
+                                    24  app/main.js   ← sempre por último
+
+Além disso, muhsic.html tem um pequeno <script> inline no <head> que
+redireciona para o login ANTES de desenhar a página, caso não exista sessão.
+
+
+================================================================================
+6. DESCRIÇÃO DE CADA ARQUIVO JAVASCRIPT
+================================================================================
+
+── config/app.config.js ────────────────────────────────────────────────────
+  APP .............. nome, versão, autor (a versão preenche os .version-badge)
+  STORAGE_KEYS ..... nomes das chaves do localStorage
+  GLOBAL_USER_ID ... 0 = música visível para todos
+  ASSETS ........... URLs de logos, capa de curtidos, avatar e sons
+  PLAYER ........... tamanho da fila, histórico, velocidade do vinil,
+                     limite de giro, passo do volume, debounce da busca...
+  THEMES ........... lista de temas válidos
+  LIKED_COLLECTION . nome da coleção "Discos curtidos"
+
+── config/plans.js ─────────────────────────────────────────────────────────
+  PLANS ............ free / plus / premium com showAds, hasThemes, cor...
+  getPlanConfig(id)  retorna o plano (desconhecido → free)
+
+── data/users.js ───────────────────────────────────────────────────────────
+  users[] .......... contas fixas { id, login, pass, name, plan, avatar }
+
+── data/songs.js ───────────────────────────────────────────────────────────
+  baseSongs[] ...... catálogo completo (ver seção 8)
+
+── core/storage.js ─────────────────────────────────────────────────────────
+  Store.get(chave, padrão) / Store.set(chave, valor) / Store.remove(chave)
+  JSON automático e nunca lança erro (aba anônima, cota cheia etc.).
+
+── core/utils.js ───────────────────────────────────────────────────────────
+  $(id), formatTime(seg), removeAccents, normalizeText, getTotalDuration,
+  escapeHTML (proteção contra HTML injetado), shuffleArray, pickRandom,
+  renderVersionBadges.
+
+── core/session.js ─────────────────────────────────────────────────────────
+  salvarSessao(user) ... grava { id, name, plan, avatar } — nunca a senha
+  requireSession() ..... sessão válida ou null
+  handleLogout() ....... apaga a sessão e volta para index.html
+
+── core/auth.js ────────────────────────────────────────────────────────────
+  normalizarUsuario .... converte formatos antigos (username/password)
+  listarTodosUsuarios .. contas fixas + contas do navegador
+  validarCredenciais ... login sem diferenciar maiúsculas, senha exata
+  registrarUsuario ..... valida campos e cria conta → { ok, erro?, usuario? }
+
+── core/library.js ─────────────────────────────────────────────────────────
+  songIsVisibleTo(song, userId)   regra dos userIds
+  getVisibleSongs(userId)         catálogo do usuário, sem duplicatas
+  getUniqueSongs(lista)           remove repetidas (título + artista)
+  getSongById(id, userId)
+  groupByCategory(userId, cat, campo)  { "Nome": [faixas] }
+  searchSongs(lista, texto)       busca sem acento em 5 campos
+
+── pages/landing.js ────────────────────────────────────────────────────────
+  initLanding() ........ abas, abrir/fechar modal, envio dos formulários.
+                         Delega as regras para core/auth.js.
+
+── app/state.js ────────────────────────────────────────────────────────────
+  session, currentUserId/Name/Plan, currentPlanCfg
+  state { playlist, currentIndex, isPlaying, isShuffled, volume,
+          currentItem, currentItemName }
+  autoQueue, playHistory, flags (pendingPlay, musicaReiniciada...)
+  Referências de DOM + cacheDomRefs()
+  getCurrentSong(), adicionarAoHistorico(), garantirNaPlaylist()
+
+── app/colors.js ───────────────────────────────────────────────────────────
+  extrairCorDominante(url)  média dos pixels de uma capa 50x50 (<canvas>)
+  getCorPasta(url)          paleta { classe, cor, corEscura, grad }
+  estiloPasta(img, paleta)  atributo style="" com as variáveis CSS
+
+── app/vinyl.js ────────────────────────────────────────────────────────────
+  startSpin / stopSpin / brakeAndStop          vinil compacto
+  startMaxSpin / stopMaxSpin / maxBrakeAndStop vinil maximizado
+  getMouseAngleFor, angleDiff                  giro manual
+
+── app/player.js ───────────────────────────────────────────────────────────
+  setCover (crossfade), applyVolume, show(Max)VolumeOverlay,
+  baixarBraco / levantarBraco, exibirFaixa, engatilharFaixaInicial,
+  loadTrack, togglePlay, playFromShelf, tocarDiscoPorId,
+  nextTrack, prevTrack, tocarAleatoriaGlobal,
+  sincronizarDuracoesBiblioteca (corrige durações lendo os metadados reais)
+
+── app/queue.js ────────────────────────────────────────────────────────────
+  buildQueue, shiftQueue, pushToEnd, animarShuffleVisual,
+  renderQueue (pilha), getDiscosASeguir, renderMaxNext (lista "A seguir")
+
+── app/likes.js ────────────────────────────────────────────────────────────
+  likedSongs / likedAlbums / likedGenres
+  carregarCurtidas / salvarCurtidas (por usuário, salva apenas IDs/nomes)
+  toggleLikeCurrent, removerCurtida, toggleAlbumCurtido,
+  isAlbumCurtido, isGenreCurtido, getCurtidasVisiveis
+
+── app/player-events.js ────────────────────────────────────────────────────
+  bindPlayerEvents: eventos do <audio> (play, pause, timeupdate, ended...),
+  barra de progresso, gestos no vinil, menu de contexto e drag & drop.
+  bindDeckControls: teclas da vitrola (#deckPrev, #deckPlay, #deckNext,
+  #deckShuffle, #deckLike, #deckMax, #deckVolDown, #deckVolUp) e som de
+  clique em todas as .key.
+
+── app/max-panel.js ────────────────────────────────────────────────────────
+  abrirMaxPanel, fecharMaxPanel, bindMaxPanelEvents (mesmos gestos,
+  botão "Fechar vitrine" e clique no fundo escuro).
+
+── app/navigation.js ───────────────────────────────────────────────────────
+  bindNavEvents (Início/Buscar/Biblioteca/voltar), bindUserMenu,
+  bindSearch (debounce), bindKeyboard (Espaço, ←, →).
+
+── app/themes.js ───────────────────────────────────────────────────────────
+  applyTheme(t), loadTheme(), markActiveTheme(), bindSettings()
+
+── app/user-ui.js ──────────────────────────────────────────────────────────
+  applyUserToUI (nome, avatar, plano, anúncio, bloqueio de temas)
+  showLoginAnimation
+
+── app/views/*.js ──────────────────────────────────────────────────────────
+  cards.js ..... createCardHTMLAsync, createSidebarItemAsync, bindAbrirDetalhe
+  home.js ...... renderHome (Feito pra você, Álbuns, Playlists, Curtidos)
+  sidebar.js ... renderSidebar
+  detail.js .... openDetail (cabeçalho colorido, metadados, botões ♥/+)
+  shelf.js ..... renderVinylShelf, updateHighlight, renderLibrary,
+                 renderSearchResults
+
+── app/main.js ─────────────────────────────────────────────────────────────
+  initMuhsic() → initApp(). Cada etapa roda isolada (função etapa): se uma
+  falhar, o erro aparece no console e as demais continuam funcionando.
+
+
+================================================================================
+7. ORGANIZAÇÃO DO CSS
+================================================================================
+
+  index.html  carrega  css/site.css   → variables, reset, effects, keycaps,
+                                        pages/landing
+  muhsic.html carrega  css/app.css    → todo o resto, na ordem abaixo
+
+  Ordem da cascata em css/app.css:
+
+    1. base/variables, reset, effects, components/keycaps
+    2. layout/app, sidebar, header
+    3. components/ad-banner, folder-cards, vinyl-shelf
+       pages/detail
+       components/search, login-animation
+    4. player/deck, turntable, queue, overlays
+    5. components/settings-modal, player/max-panel
+    6. base/responsive     ← @media sempre depois dos componentes
+    7. themes/themes       ← acabamentos sobrescrevem as variáveis
+
+  Identidade visual (tokens em base/variables.css):
+    Superfícies ..... --bg-screen, --bg-panel, --bg-inset, --wood-grain
+    Texto ........... --text-primary, --text-secondary, --text-muted
+    Acento .......... --accent (trocado pelo tema) e derivados calculados
+                      com color-mix(): --accent-soft, --accent-glow,
+                      --accent-dark, --stripes-v, --stripes-h
+    Cores fixas 80s . --mustard, --brick, --teal, --cobalt, --plum, --cream
+    Teclas .......... --key-top, --key-side, --key-edge, --key-text
+    LCD ............. --lcd-bg, --lcd-text, --lcd-glow
+    Fontes .......... --font (Rubik), --font-display (Bungee),
+                      --font-lcd (VT323)
+
+  Componentes reutilizáveis:
+    .key ............ tecla bege. Variações: --accent, --mod, --sm, --lg,
+                      --icon, --block. data-legend="F1" mostra legenda;
+                      .active acende o LED.
+    .kbd ............ tecla desenhada (tabelas de controles)
+    .panel .......... painel com parafusos nos cantos
+    .lcd-text ....... texto de visor âmbar
+    .stripes ........ faixa de 4 cores
+    .crt (no body) .. scanlines + vinheta sobre a tela inteira
+
+  Estados controlados pelo JavaScript (classes no <body>):
+    is-playing ........ disco tocando: LED aceso, VU animado, botão vira pausa,
+                        logo do rack gira
+    is-dragging-disc .. um disco está sendo arrastado: o prato pulsa e
+                        aparece "SOLTE O DISCO AQUI"
+
+  Vitrola escalável:
+    O toca-discos é desenhado numa "stage" fixa de 300×300 px e reduzido
+    com transform: scale(var(--tt-scale)). Assim a geometria do braço
+    (pivô, comprimento e ângulos 6°/24°) nunca quebra em telas menores.
+    O modo vitrine usa o mesmo princípio com --max-scale.
+
+  Como funcionam os temas:
+    Todo o visual usa variáveis (ex.: var(--accent)). O JavaScript define
+    <body data-theme="red"> e o bloco body[data-theme="red"] em themes.css
+    troca o --accent; os tons derivados são recalculados no <body>.
+    O tema "light" (Papel) também troca as superfícies e o texto.
+
+
+================================================================================
+8. MODELOS DE DADOS
+================================================================================
+
+  USUÁRIO (data/users.js e contas criadas)
+  ┌───────────┬──────────────────────────────────────────────────────────┐
+  │ id        │ número único (0 é reservado para "global")               │
+  │ login     │ nome usado para entrar                                   │
+  │ pass      │ senha (texto puro — simulação)                           │
+  │ name      │ nome exibido                                             │
+  │ plan      │ 'free' | 'plus' | 'premium'                              │
+  │ avatar    │ URL (opcional)                                           │
+  │ email     │ apenas contas criadas pelo formulário                    │
+  └───────────┴──────────────────────────────────────────────────────────┘
+
+  MÚSICA (data/songs.js)
+  ┌────────────┬─────────────────────────────────────────────────────────┐
+  │ id         │ número único                                            │
+  │ title      │ nome da música                                          │
+  │ artist     │ artista                                                 │
+  │ category   │ 'playlist' | 'album' | 'genre'                          │
+  │ playlist   │ nome da playlist  (se category = 'playlist')            │
+  │ album      │ nome do álbum     (se category = 'album')               │
+  │ genre      │ nome do gênero    (se category = 'genre')               │
+  │ coverImage │ URL da capa                                             │
+  │ url        │ URL do áudio (.mp3)                                     │
+  │ duration   │ segundos (aproximado; corrigido em segundo plano)       │
+  │ userIds    │ [0] todos · [1] só o usuário 1 · [1,2] usuários 1 e 2   │
+  └────────────┴─────────────────────────────────────────────────────────┘
+
+  As coleções (álbuns, playlists, gêneros) NÃO são cadastradas à parte:
+  elas surgem automaticamente agrupando as músicas pelo campo da categoria.
+
+  SESSÃO (localStorage)
+    { id, name, plan, avatar }
+
+
+================================================================================
+9. PERSISTÊNCIA (localStorage)
+================================================================================
+
+  ┌───────────────────────┬────────────────────────────────────────────────┐
+  │ Chave                 │ Conteúdo                                       │
+  ├───────────────────────┼────────────────────────────────────────────────┤
+  │ muhsic_session        │ usuário logado { id, name, plan, avatar }      │
+  │ muhsic_users          │ contas criadas pelo formulário [ ... ]         │
+  │ muhsic_theme_<id>     │ tema escolhido por cada usuário ("blue")       │
+  │ muhsic_likes_<id>     │ { songs:[ids], albums:[nomes], genres:[nomes] }│
+  │ muhsic_lastSongId     │ última música tocada                           │
+  └───────────────────────┴────────────────────────────────────────────────┘
+
+  Curtidas guardam só IDs/nomes; ao abrir o app elas são reconstruídas com
+  os dados atuais do catálogo. Se uma música sair do catálogo (ou deixar de
+  ser visível para o usuário), ela some das curtidas sem quebrar nada.
+
+  Para limpar tudo durante uma apresentação: DevTools (F12) → Application →
+  Local Storage → botão "Clear".
+
+
+================================================================================
+10. FLUXOS PRINCIPAIS
+================================================================================
+
+  ── LOGIN ────────────────────────────────────────────────────────────────
+   Usuário envia o formulário (index.html)
+     └▶ landing.js → validarCredenciais()          [core/auth]
+          ├ falhou  → mensagem "Usuário ou senha inválidos."
+          └ ok      → salvarSessao()               [core/session]
+                       └▶ redireciona para muhsic.html
+
+  ── ABERTURA DO PLAYER ───────────────────────────────────────────────────
+   <head> inline: sem sessão? → volta para index.html
+   state.js:      lê a sessão e o plano
+   main.js → initMuhsic()
+     1. loadTheme()               aplica data-theme no <body>
+     2. cacheDomRefs()            guarda os elementos da tela
+     3. applyUserToUI()           nome, plano, anúncio, bloqueio de temas
+     4. carregarCurtidas()        curtidas salvas do usuário
+     5. bind*()                   todos os eventos
+     6. initApp()
+          renderHome → renderSidebar → renderLibrary → renderSearchResults
+          prepararPrimeiraFaixa (engatilha sem tocar) → buildQueue
+          sincronizarDuracoesBiblioteca (em segundo plano)
+     7. showLoginAnimation()
+
+  ── TOCAR UMA MÚSICA ─────────────────────────────────────────────────────
+   clique no vinil → togglePlay()
+     └▶ pendingPlay = true; braço desce (classe .active)
+          └▶ "transitionend" do braço → audio.play()
+               └▶ evento "play" → startSpin(), destaque na lista,
+                                  salva muhsic_lastSongId
+
+  ── PRÓXIMA FAIXA ────────────────────────────────────────────────────────
+   girar o vinil ≥ 60° / tecla → / fim da música
+     └▶ nextTrack()
+          ├ fila tem itens → toca autoQueue[0], shiftQueue() completa a fila
+          └ fila vazia     → aleatório (biblioteca) ou próxima da lista
+
+  ── FAIXA ANTERIOR ───────────────────────────────────────────────────────
+   prevTrack()
+     ├ tocou > 3s → volta ao início da mesma faixa
+     ├ há histórico → toca a última de playHistory
+     └ senão → faixa anterior da lista ativa
+
+  ── CURTIR ───────────────────────────────────────────────────────────────
+   duplo clique no vinil → toggleLikeCurrent()
+     └▶ altera likedSongs → salvarCurtidas() → renderSidebar + renderHome
+
+  ── TROCAR TEMA ──────────────────────────────────────────────────────────
+   Menu do perfil → Acabamento do aparelho → clique na cor → applyTheme()
+     ├ plano sem temas → ignora (grade aparece bloqueada)
+     └ ok → <body data-theme> + salva muhsic_theme_<id>
+
+
+================================================================================
+11. GUIA: COMO ADICIONAR NOVAS FUNCIONALIDADES
+================================================================================
+
+  ── Nova música ──────────────────────────────────────────────────────────
+   1. Suba o .mp3 e a capa no Cloudinary.
+   2. Adicione um objeto em js/data/songs.js com um id ainda não usado.
+   3. Defina userIds ([0] para todos).
+   Se o nome de álbum/playlist/gênero for novo, a pasta é criada sozinha.
+
+  ── Novo usuário de teste ────────────────────────────────────────────────
+   Adicione em js/data/users.js. Use um id novo e um plano de plans.js.
+
+  ── Novo plano ───────────────────────────────────────────────────────────
+   1. Adicione a entrada em js/config/plans.js.
+   2. Inclua a <option> no <select id="regPlan"> do index.html.
+
+  ── Novo tema ────────────────────────────────────────────────────────────
+   1. Adicione o nome em THEMES (js/config/app.config.js).
+   2. Crie body[data-theme="nome"] { ... } em css/themes/themes.css.
+   3. Adicione o botão .theme-swatch no modal em muhsic.html.
+
+  ── Novo componente visual (CSS) ─────────────────────────────────────────
+   1. Crie o arquivo em css/components/ (ou player/, layout/).
+   2. Importe-o em css/app.css ANTES de base/responsive.css.
+   3. Regras responsivas do componente vão em base/responsive.css.
+
+  ── Nova tela / funcionalidade em JS ─────────────────────────────────────
+   1. Regra sem interface?  → crie/edite um arquivo em js/core/.
+      Interface?            → crie em js/app/ (ou js/app/views/).
+   2. Adicione o <script> em muhsic.html na camada certa,
+      sempre ANTES de js/app/main.js.
+   3. Se precisa de eventos, crie uma função bindAlgo() e chame-a em
+      initMuhsic() usando etapa('nome', bindAlgo).
+   4. Valores configuráveis → PLAYER ou ASSETS em app.config.js.
+   5. Dados salvos → nova chave em STORAGE_KEYS + uso via Store.
+
+  ── Trocar por um backend real ───────────────────────────────────────────
+   • js/data/*.js       → chamadas fetch() para a API
+   • core/auth.js       → POST /login e POST /register
+   • core/storage.js    → manter só para preferências locais
+   O restante do app não precisa mudar.
+
+
+================================================================================
+12. CONVENÇÕES DE CÓDIGO
+================================================================================
+
+  • Indentação de 4 espaços, UTF-8, ponto e vírgula no fim das instruções.
+  • Cada arquivo começa com um cabeçalho:
+        /* ===== MUHSIC — PASTA / ARQUIVO =====  descrição  ===== */
+  • Constantes globais em MAIÚSCULAS (PLAYER, ASSETS, QUEUE_SIZE).
+  • Funções de interface: render*() desenham, bind*() ligam eventos.
+  • Nomes em português ou inglês são mantidos como no código original para
+    preservar o histórico; novos nomes seguem o idioma do arquivo.
+  • Texto vindo de usuário ou do catálogo entra no HTML via escapeHTML().
+  • localStorage é acessado SOMENTE pelo objeto Store.
+  • Nenhuma lógica no HTML além do guarda de sessão do <head>.
+
+
+================================================================================
+13. LIMITAÇÕES CONHECIDAS
+================================================================================
+
+  • Senhas em texto puro e autenticação no navegador: aceitável apenas por
+    ser uma simulação acadêmica. Não usar com dados reais.
+  • Dados salvos ficam apenas no navegador atual (não sincroniza).
+  • Gestos do vinil usam mouse; em telas de toque use o teclado da vitrola
+    (play, próxima, anterior, volume...). Arrastar discos também depende
+    de mouse (drag & drop nativo do HTML).
+  • O visual usa color-mix() do CSS: navegadores de 2023 em diante
+    (Chrome 111+, Firefox 113+, Safari 16.2+).
+  • Os botões ♥/+ salvam apenas álbuns; em playlists ainda não fazem nada.
+  • Depende de internet para Cloudinary, Font Awesome e Google Fonts.
+
+================================================================================
+                    © 2026 Muhsic / MPS — Projeto acadêmico
+================================================================================

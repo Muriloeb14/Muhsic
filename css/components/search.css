@@ -1,0 +1,37 @@
+/* ============================================================
+   MUHSIC — COMPONENTS / SEARCH.CSS
+   Campo de busca em formato de visor LCD.
+   ============================================================ */
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding: 0 18px;
+    background: var(--lcd-bg);
+    border: 1px solid rgba(255, 181, 71, 0.2);
+    border-radius: var(--radius);
+    box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.75), 0 1px 0 rgba(255, 240, 210, 0.05);
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+.search-bar:focus-within {
+    border-color: var(--lcd-text);
+    box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.75), 0 0 0 3px rgba(255, 181, 71, 0.15);
+}
+.search-bar i { color: var(--lcd-text); font-size: 16px; opacity: 0.8; }
+.search-bar input {
+    flex: 1;
+    min-width: 0;
+    padding: 14px 0 12px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: var(--font-lcd);
+    font-size: 26px;
+    letter-spacing: 0.04em;
+    color: var(--lcd-text);
+    text-shadow: var(--lcd-glow);
+    caret-color: var(--lcd-text);
+}
+.search-bar input::placeholder { color: var(--lcd-dim); text-shadow: none; }

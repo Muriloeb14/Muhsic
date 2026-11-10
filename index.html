@@ -3,138 +3,485 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Muhsic — Entrar</title>
+    <title>Muhsic — Sua vitrola digital</title>
+    <meta name="description" content="Muhsic — player de música com alma de vitrola dos anos 80. Gire o disco, arraste o vinil e ouça do jeito analógico. Projeto acadêmico MPS.">
+    <meta name="theme-color" content="#160f0b">
+    <link rel="icon" type="image/svg+xml" href="assets/img/muhsic-mark.svg">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Rubik:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/landing.css">
+    <!-- Todos os estilos da landing são importados por css/site.css -->
+    <link rel="stylesheet" href="css/site.css">
 </head>
-<body>
+<body class="site-body crt">
 
-    <div class="landing">
+    <!-- ======================================================
+         BARRA SUPERIOR (HUD)
+         ====================================================== -->
+    <header class="site-header">
+        <a class="brand" href="#topo" aria-label="Muhsic — início">
+            <img src="assets/img/muhsic-mark.svg" alt="" class="brand-mark">
+            <span class="brand-word">MUHSIC</span>
+            <span class="version-badge">BETA 0.7</span>
+        </a>
 
-        <!-- ===== HEADER ===== -->
-        <header class="landing-header">
-            <div class="landing-brand">
-                <img src="https://res.cloudinary.com/oizv8icb/image/upload/v1786581131/Muhsic.png" alt="Muhsic">
-                <span class="version-badge">BETA 0.5</span>
-            </div>
-            <nav class="landing-nav">
-                <a id="navRegister">Criar conta</a>
-                <button class="btn-entrar-header" id="btnHeaderEntrar">Entrar</button>
-            </nav>
-        </header>
+        <nav class="site-nav" aria-label="Seções">
+            <a href="#recursos">Recursos</a>
+            <a href="#como-jogar">Como tocar</a>
+            <a href="#planos">Planos</a>
+            <a href="#projeto">O projeto</a>
+        </nav>
 
-        <!-- ===== HERO ===== -->
-        <main class="landing-hero">
-            <h1 class="landing-title">Sua música, do seu jeito. <span>Muhsic.</span></h1>
-            <p class="landing-sub">
-                Um player vintage com vitrola animada, fila inteligente e sua biblioteca
-                inteira na palma da mão. Entre agora e comece a ouvir.
-            </p>
-            <div class="landing-cta">
-                <button class="btn-primary" id="btnHeroComecar">
-                    <i class="fas fa-play"></i> Começar agora
-                </button>
-                <button class="btn-secondary" id="btnHeroLogin">
-                    Já tenho conta
-                </button>
-            </div>
-        </main>
+        <div class="site-header-actions">
+            <button class="key key--sm key--mod" id="navRegister" data-legend="F2">Criar perfil</button>
+            <button class="key key--sm key--accent" id="btnHeaderEntrar" data-legend="F1">
+                <i class="fas fa-power-off"></i> Entrar
+            </button>
+        </div>
+    </header>
 
-        <!-- ===== FEATURES ===== -->
-        <section class="landing-features">
-            <div class="feature-card">
-                <i class="fas fa-compact-disc"></i>
-                <h3>Vitrola animada</h3>
-                <p>Disco girando, braço se movendo, tudo em tempo real conforme a música toca.</p>
+    <main id="topo">
+
+        <!-- ======================================================
+             HERO — "TELA TÍTULO"
+             ====================================================== -->
+        <section class="hero">
+            <div class="hero-sun" aria-hidden="true"></div>
+
+            <div class="hero-copy">
+                <p class="eyebrow"><span class="rec-dot blink"></span> LADO A · FAIXA 01</p>
+
+                <h1 class="hero-title">
+                    Sua música,<br>
+                    do jeito <span class="hero-title-accent">analógico.</span>
+                </h1>
+
+                <p class="hero-sub">
+                    O <strong>Muhsic</strong> é um player de música que funciona como uma
+                    vitrola de verdade. Puxe o disco da prateleira, solte no prato,
+                    veja o braço descer sobre o vinil e gire o disco com o mouse
+                    para trocar de faixa. Sem playlists infinitas e frias:
+                    aqui você <em>manuseia</em> a sua coleção.
+                </p>
+
+                <div class="hero-cta">
+                    <button class="key key--lg key--accent" id="btnHeroComecar" data-legend="START">
+                        <i class="fas fa-play"></i> Começar agora
+                    </button>
+                    <button class="key key--lg" id="btnHeroLogin" data-legend="LOAD">
+                        <i class="fas fa-floppy-disk"></i> Já tenho perfil
+                    </button>
+                </div>
+
+                <p class="press-start"><span class="blink">▶ PRESSIONE START PARA TOCAR</span></p>
+
+                <ul class="hero-stats">
+                    <li><strong>100+</strong><span>discos no catálogo</span></li>
+                    <li><strong>7</strong><span>temas de cor</span></li>
+                    <li><strong>3</strong><span>planos</span></li>
+                    <li><strong>0</strong><span>frameworks</span></li>
+                </ul>
             </div>
-            <div class="feature-card">
-                <i class="fas fa-random"></i>
-                <h3>Aleatório inteligente</h3>
-                <p>Sorteia músicas da biblioteca inteira, não só da playlist atual.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-layer-group"></i>
-                <h3>Fila automática</h3>
-                <p>As próximas três músicas já ficam engatilhadas ao lado da vitrola.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-expand"></i>
-                <h3>Modo maximizado</h3>
-                <p>Abra o painel lateral e veja o vinil em tamanho grande com a fila embaixo.</p>
+
+            <!-- Vitrola ilustrativa (decorativa) -->
+            <div class="hero-deck" aria-hidden="true">
+                <div class="hd-plinth">
+                    <div class="hd-plate">MUHSIC HI-FI · MS-86</div>
+                    <div class="hd-platter">
+                        <div class="hd-record">
+                            <div class="hd-label">
+                                <img src="assets/img/muhsic-mark.svg" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hd-arm">
+                        <div class="hd-arm-base"></div>
+                        <div class="hd-arm-rod"><div class="hd-arm-head"></div></div>
+                    </div>
+                    <div class="hd-controls">
+                        <span class="hd-knob"></span>
+                        <span class="hd-knob"></span>
+                        <span class="hd-led"></span>
+                        <span class="hd-speed">33<sup>⅓</sup></span>
+                    </div>
+                </div>
+                <div class="hd-sleeves">
+                    <span class="hd-sleeve s1"></span>
+                    <span class="hd-sleeve s2"></span>
+                    <span class="hd-sleeve s3"></span>
+                </div>
             </div>
         </section>
 
-    </div>
+        <!-- Letreiro de LCD -->
+        <div class="ticker" aria-hidden="true">
+            <div class="ticker-track lcd-text">
+                <span>★ AGORA TOCANDO: SUA COLEÇÃO</span>
+                <span>★ GIRE O DISCO PARA TROCAR DE FAIXA</span>
+                <span>★ ARRASTE O VINIL ATÉ A VITROLA</span>
+                <span>★ 33⅓ RPM · ESTÉREO · HI-FI</span>
+                <span>★ DUPLO CLIQUE PARA CURTIR</span>
+                <span>★ AGORA TOCANDO: SUA COLEÇÃO</span>
+                <span>★ GIRE O DISCO PARA TROCAR DE FAIXA</span>
+                <span>★ ARRASTE O VINIL ATÉ A VITROLA</span>
+                <span>★ 33⅓ RPM · ESTÉREO · HI-FI</span>
+                <span>★ DUPLO CLIQUE PARA CURTIR</span>
+            </div>
+        </div>
 
-    <!-- ===== MODAL LOGIN / REGISTER ===== -->
-    <div class="modal-overlay" id="authModal">
+        <!-- ======================================================
+             RECURSOS
+             ====================================================== -->
+        <section class="section" id="recursos">
+            <header class="section-head">
+                <span class="section-kicker">01 · Recursos</span>
+                <h2 class="section-title">Tudo o que uma vitrola faz.<br>E um pouco mais.</h2>
+                <p class="section-lead">
+                    Cada função do Muhsic foi pensada como um objeto físico:
+                    discos que giram, braço que desce, pastas que se abrem.
+                </p>
+            </header>
+
+            <div class="feature-grid">
+                <article class="feature-card">
+                    <span class="feature-icon" style="--c: var(--accent)"><i class="fas fa-compact-disc"></i></span>
+                    <h3>Vitrola em tempo real</h3>
+                    <p>O disco gira enquanto a música toca, freia com inércia ao pausar e o braço desce antes do som começar.</p>
+                </article>
+                <article class="feature-card">
+                    <span class="feature-icon" style="--c: var(--mustard)"><i class="fas fa-hand-pointer"></i></span>
+                    <h3>Arraste e solte</h3>
+                    <p>Puxe qualquer disco da prateleira e solte no prato da vitrola para tocar na hora.</p>
+                </article>
+                <article class="feature-card">
+                    <span class="feature-icon" style="--c: var(--teal)"><i class="fas fa-rotate-right"></i></span>
+                    <h3>Gire para trocar</h3>
+                    <p>Gire o vinil para frente e ele avança a faixa. Gire para trás e ele volta. Como um DJ.</p>
+                </article>
+                <article class="feature-card">
+                    <span class="feature-icon" style="--c: var(--brick)"><i class="fas fa-layer-group"></i></span>
+                    <h3>Fila automática</h3>
+                    <p>Os próximos três discos ficam engatilhados ao lado do prato. Você sempre sabe o que vem.</p>
+                </article>
+                <article class="feature-card">
+                    <span class="feature-icon" style="--c: var(--mustard)"><i class="fas fa-shuffle"></i></span>
+                    <h3>Aleatório de verdade</h3>
+                    <p>O modo aleatório sorteia da sua coleção inteira, não apenas do álbum que está aberto.</p>
+                </article>
+                <article class="feature-card">
+                    <span class="feature-icon" style="--c: var(--accent)"><i class="fas fa-folder-open"></i></span>
+                    <h3>Pastas com cor própria</h3>
+                    <p>A cor de cada álbum é extraída da capa, pixel a pixel, e vira a cor da pasta de vinil.</p>
+                </article>
+                <article class="feature-card">
+                    <span class="feature-icon" style="--c: var(--teal)"><i class="fas fa-heart"></i></span>
+                    <h3>Coleção pessoal</h3>
+                    <p>Curta discos e álbuns com um duplo clique. Tudo fica salvo no seu perfil.</p>
+                </article>
+                <article class="feature-card">
+                    <span class="feature-icon" style="--c: var(--brick)"><i class="fas fa-palette"></i></span>
+                    <h3>7 acabamentos</h3>
+                    <p>Escolha a cor do seu aparelho: Sunset, Papel, Cereja, Cobalto, Vinil, Oliva ou Âmbar.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             COMO TOCAR (controles)
+             ====================================================== -->
+        <section class="section section--panel" id="como-jogar">
+            <header class="section-head">
+                <span class="section-kicker">02 · Como tocar</span>
+                <h2 class="section-title">Os controles</h2>
+                <p class="section-lead">Três passos para começar e um punhado de gestos para dominar o aparelho.</p>
+            </header>
+
+            <ol class="steps">
+                <li class="step">
+                    <span class="step-num">1</span>
+                    <h3>Escolha uma pasta</h3>
+                    <p>Navegue por gêneros, álbuns e playlists. Passe o mouse e os discos saem da capa.</p>
+                </li>
+                <li class="step">
+                    <span class="step-num">2</span>
+                    <h3>Puxe o disco</h3>
+                    <p>Segure qualquer vinil da prateleira e arraste até a vitrola à direita.</p>
+                </li>
+                <li class="step">
+                    <span class="step-num">3</span>
+                    <h3>Solte e ouça</h3>
+                    <p>O prato acende, o braço desce e a música começa. Gire para trocar de faixa.</p>
+                </li>
+            </ol>
+
+            <div class="controls">
+                <div class="controls-col">
+                    <h3 class="controls-title"><i class="fas fa-computer-mouse"></i> Mouse no vinil</h3>
+                    <dl class="control-list">
+                        <div><dt><span class="kbd">Clique</span></dt><dd>Tocar / pausar</dd></div>
+                        <div><dt><span class="kbd">Girar ↻</span></dt><dd>Próxima faixa</dd></div>
+                        <div><dt><span class="kbd">Girar ↺</span></dt><dd>Faixa anterior</dd></div>
+                        <div><dt><span class="kbd">Scroll</span></dt><dd>Volume</dd></div>
+                        <div><dt><span class="kbd">2× Clique</span></dt><dd>Curtir o disco</dd></div>
+                        <div><dt><span class="kbd">Botão dir.</span></dt><dd>Aleatório / maximizar</dd></div>
+                    </dl>
+                </div>
+                <div class="controls-col">
+                    <h3 class="controls-title"><i class="fas fa-keyboard"></i> Teclado</h3>
+                    <dl class="control-list">
+                        <div><dt><span class="kbd kbd--wide">Espaço</span></dt><dd>Tocar / pausar</dd></div>
+                        <div><dt><span class="kbd">→</span></dt><dd>Próxima faixa</dd></div>
+                        <div><dt><span class="kbd">←</span></dt><dd>Faixa anterior</dd></div>
+                        <div><dt><span class="kbd">Esc</span></dt><dd>Fechar menus e painéis</dd></div>
+                    </dl>
+                    <p class="controls-note">
+                        <i class="fas fa-circle-info"></i>
+                        Prefere botões? A vitrola também tem um teclado próprio com
+                        play, avançar, voltar, aleatório, curtir e volume.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             PLANOS — "SELECIONE SEU PLANO"
+             ====================================================== -->
+        <section class="section" id="planos">
+            <header class="section-head">
+                <span class="section-kicker">03 · Planos</span>
+                <h2 class="section-title">Selecione seu plano</h2>
+                <p class="section-lead">Todos os perfis tocam a coleção principal. Os planos pagos liberam o resto da loja.</p>
+            </header>
+
+            <div class="plan-grid">
+                <article class="plan-card" style="--plan: var(--teal)">
+                    <header class="plan-head">
+                        <span class="plan-tag">Nível 1</span>
+                        <h3>Free</h3>
+                        <p class="plan-price">R$ 0<small>/mês</small></p>
+                    </header>
+                    <ul class="plan-perks">
+                        <li class="yes">Vitrola completa e todos os gestos</li>
+                        <li class="yes">Coleção principal de discos</li>
+                        <li class="yes">Curtidas salvas no perfil</li>
+                        <li class="no">Anúncios entre as telas</li>
+                        <li class="no">Temas de cor</li>
+                        <li class="no">Discos exclusivos</li>
+                    </ul>
+                    <button class="key key--block" data-plan="free">Escolher Free</button>
+                </article>
+
+                <article class="plan-card plan-card--featured" style="--plan: var(--mustard)">
+                    <span class="plan-ribbon">Mais escolhido</span>
+                    <header class="plan-head">
+                        <span class="plan-tag">Nível 2</span>
+                        <h3>Muhsic+</h3>
+                        <p class="plan-price">R$ 9<small>,90/mês</small></p>
+                    </header>
+                    <ul class="plan-perks">
+                        <li class="yes">Tudo do Free</li>
+                        <li class="yes">Sem anúncios</li>
+                        <li class="yes">7 temas de cor para o aparelho</li>
+                        <li class="yes">Discos exclusivos</li>
+                        <li class="yes">Até 2 perfis</li>
+                    </ul>
+                    <button class="key key--block key--accent" data-plan="plus">Escolher Muhsic+</button>
+                </article>
+
+                <article class="plan-card" style="--plan: var(--plum)">
+                    <header class="plan-head">
+                        <span class="plan-tag">Nível 3</span>
+                        <h3>Premium</h3>
+                        <p class="plan-price">R$ 16<small>,90/mês</small></p>
+                    </header>
+                    <ul class="plan-perks">
+                        <li class="yes">Tudo do Muhsic+</li>
+                        <li class="yes">Até 4 perfis</li>
+                        <li class="yes">Selo Premium no perfil</li>
+                    </ul>
+                    <button class="key key--block" data-plan="premium">Escolher Premium</button>
+                </article>
+            </div>
+            <p class="plan-disclaimer">Valores fictícios — o Muhsic é um projeto acadêmico e nenhuma cobrança é feita.</p>
+        </section>
+
+        <!-- ======================================================
+             O PROJETO
+             ====================================================== -->
+        <section class="section section--panel" id="projeto">
+            <header class="section-head">
+                <span class="section-kicker">04 · O projeto</span>
+                <h2 class="section-title">Ficha técnica</h2>
+            </header>
+
+            <div class="about">
+                <div class="about-text">
+                    <p>
+                        O <strong>Muhsic</strong> nasceu como trabalho acadêmico do grupo
+                        <strong>MPS — MapleProjectSeries</strong>. A proposta é repensar a
+                        interface de um player de música: em vez de listas e botões
+                        genéricos, uma vitrola que você manuseia como um objeto real.
+                    </p>
+                    <p>
+                        Todo o projeto foi escrito em <strong>HTML, CSS e JavaScript puros</strong>,
+                        sem frameworks e sem etapa de build. O código é organizado em camadas
+                        (configuração, dados, núcleo e interface) para receber novas funções
+                        com facilidade.
+                    </p>
+                </div>
+
+                <dl class="spec-sheet">
+                    <div><dt>Modelo</dt><dd class="lcd-text">MS-86 · BETA 0.7</dd></div>
+                    <div><dt>Autor</dt><dd>Murilo N.B</dd></div>
+                    <div><dt>Grupo</dt><dd>MPS — MapleProjectSeries</dd></div>
+                    <div><dt>Linguagens</dt><dd>HTML5 · CSS3 · JavaScript</dd></div>
+                    <div><dt>Animação</dt><dd>requestAnimationFrame + transições CSS</dd></div>
+                    <div><dt>Cores</dt><dd>Extraídas da capa via Canvas API</dd></div>
+                    <div><dt>Dados</dt><dd>Catálogo em JS + localStorage</dd></div>
+                    <div><dt>Mídia</dt><dd>Cloudinary</dd></div>
+                </dl>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             CHAMADA FINAL
+             ====================================================== -->
+        <section class="final-cta">
+            <div class="stripes final-stripes"></div>
+            <h2>Pronto para baixar o braço?</h2>
+            <p>Crie seu perfil em menos de um minuto e comece a ouvir.</p>
+            <div class="hero-cta">
+                <button class="key key--lg key--accent" data-auth="register" data-legend="START">
+                    <i class="fas fa-play"></i> Criar meu perfil
+                </button>
+                <button class="key key--lg" data-auth="login" data-legend="LOAD">
+                    <i class="fas fa-floppy-disk"></i> Entrar
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-brand">
+            <img src="assets/img/muhsic-mark.svg" alt="" class="brand-mark">
+            <span>MUHSIC</span>
+        </div>
+        <p>© 2026 Muhsic / MPS — Projeto acadêmico, sem fins comerciais.</p>
+        <p class="footer-credit">Feito com HTML, CSS e JavaScript puro.</p>
+    </footer>
+
+    <!-- ======================================================
+         MODAL — "SELEÇÃO DE PERFIL" (login / cadastro)
+         ====================================================== -->
+    <div class="modal-overlay" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
         <div class="modal-panel">
-            <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
-
-            <div class="modal-tabs">
-                <button class="modal-tab active" id="tabLogin">Entrar</button>
-                <button class="modal-tab" id="tabRegister">Criar conta</button>
+            <div class="modal-titlebar">
+                <span class="modal-titlebar-stripes"></span>
+                <span id="authTitle">SELEÇÃO DE PERFIL</span>
+                <button class="key key--icon key--sm key--mod modal-close" id="modalClose" aria-label="Fechar" data-legend="ESC">
+                    <i class="fas fa-xmark"></i>
+                </button>
             </div>
 
-            <!-- LOGIN -->
-            <div id="paneLogin">
-                <h2>Bem-vindo de volta</h2>
-                <p class="modal-sub">Entre com sua conta para ouvir sua biblioteca</p>
-                <form class="modal-form" id="loginForm">
-                    <label class="modal-field">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="loginUser" placeholder="Usuário" required autocomplete="username">
-                    </label>
-                    <label class="modal-field">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="loginPass" placeholder="Senha" required autocomplete="current-password">
-                    </label>
-                    <button type="submit" class="modal-btn">
-                        <i class="fas fa-sign-in-alt"></i> Entrar
+            <div class="modal-body">
+                <div class="modal-tabs" role="tablist">
+                    <button class="key key--sm modal-tab active" id="tabLogin" role="tab">
+                        <i class="fas fa-floppy-disk"></i> Carregar perfil
                     </button>
-                    <p class="modal-msg" id="loginMsg"></p>
-                </form>
-            </div>
-
-            <!-- REGISTER -->
-            <div id="paneRegister" class="hidden">
-                <h2>Criar conta</h2>
-                <p class="modal-sub">Leva menos de um minuto</p>
-                <form class="modal-form" id="registerForm">
-                    <label class="modal-field">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="regName" placeholder="Nome de usuário" required>
-                    </label>
-                    <label class="modal-field">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="regEmail" placeholder="E-mail" required>
-                    </label>
-                    <label class="modal-field">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="regPass" placeholder="Senha (mín. 4)" required minlength="4">
-                    </label>
-                    <label class="modal-field">
-                        <i class="fas fa-crown"></i>
-                        <select id="regPlan">
-                            <option value="free">Plano Free</option>
-                            <option value="plus">Muhsic+</option>
-                            <option value="premium">Premium</option>
-                        </select>
-                    </label>
-                    <button type="submit" class="modal-btn">
-                        <i class="fas fa-user-plus"></i> Criar conta
+                    <button class="key key--sm modal-tab" id="tabRegister" role="tab">
+                        <i class="fas fa-user-plus"></i> Novo perfil
                     </button>
-                    <p class="modal-msg" id="registerMsg"></p>
-                </form>
-            </div>
+                </div>
 
+                <!-- LOGIN -->
+                <div id="paneLogin">
+                    <h2>Bem-vindo de volta</h2>
+                    <p class="modal-sub">Insira seus dados para carregar sua coleção.</p>
+                    <form class="modal-form" id="loginForm">
+                        <label class="modal-field">
+                            <span class="field-label">Usuário</span>
+                            <span class="field-input">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="loginUser" placeholder="ex.: Teste" required autocomplete="username">
+                            </span>
+                        </label>
+                        <label class="modal-field">
+                            <span class="field-label">Senha</span>
+                            <span class="field-input">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="loginPass" placeholder="••••" required autocomplete="current-password">
+                            </span>
+                        </label>
+                        <button type="submit" class="key key--lg key--accent key--block modal-btn" data-legend="ENTER">
+                            <i class="fas fa-power-off"></i> Ligar o aparelho
+                        </button>
+                        <p class="modal-msg" id="loginMsg" role="status"></p>
+                    </form>
+                </div>
+
+                <!-- CADASTRO -->
+                <div id="paneRegister" class="hidden">
+                    <h2>Novo perfil</h2>
+                    <p class="modal-sub">Leva menos de um minuto.</p>
+                    <form class="modal-form" id="registerForm">
+                        <label class="modal-field">
+                            <span class="field-label">Nome de usuário</span>
+                            <span class="field-input">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="regName" placeholder="Como quer ser chamado" required>
+                            </span>
+                        </label>
+                        <label class="modal-field">
+                            <span class="field-label">E-mail</span>
+                            <span class="field-input">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="regEmail" placeholder="voce@email.com" required>
+                            </span>
+                        </label>
+                        <label class="modal-field">
+                            <span class="field-label">Senha</span>
+                            <span class="field-input">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="regPass" placeholder="Mínimo 4 caracteres" required minlength="4">
+                            </span>
+                        </label>
+                        <label class="modal-field">
+                            <span class="field-label">Plano</span>
+                            <span class="field-input">
+                                <i class="fas fa-crown"></i>
+                                <select id="regPlan">
+                                    <option value="free">Free</option>
+                                    <option value="plus">Muhsic+</option>
+                                    <option value="premium">Premium</option>
+                                </select>
+                            </span>
+                        </label>
+                        <button type="submit" class="key key--lg key--accent key--block modal-btn" data-legend="ENTER">
+                            <i class="fas fa-user-plus"></i> Criar perfil
+                        </button>
+                        <p class="modal-msg" id="registerMsg" role="status"></p>
+                    </form>
+                </div>
+
+                <p class="modal-hint">
+                    Perfis de teste: <span class="lcd-text">Teste / 1234</span> (Free) ·
+                    <span class="lcd-text">Carol / 1234</span> (Muhsic+)
+                </p>
+            </div>
         </div>
     </div>
 
-    <script src="js/users.js"></script>
-    <script src="js/login.js"></script>
+    <!-- ===== SCRIPTS (a ordem importa) ===== -->
+    <script src="js/config/app.config.js"></script>
+    <script src="js/config/plans.js"></script>
+    <script src="js/data/users.js"></script>
+    <script src="js/core/storage.js"></script>
+    <script src="js/core/utils.js"></script>
+    <script src="js/core/session.js"></script>
+    <script src="js/core/auth.js"></script>
+    <script src="js/pages/landing.js"></script>
 </body>
 </html>

@@ -1,0 +1,83 @@
+/* ============================================================
+   MUHSIC — THEMES / THEMES.CSS
+   ------------------------------------------------------------
+   "Acabamentos" do aparelho, aplicados via <body data-theme>.
+   Cada tema troca o --accent; os tons derivados (glow, soft,
+   faixas) são recalculados automaticamente (base/variables.css).
+   ============================================================ */
+
+/* Sunset (padrão) */
+body[data-theme="default"] { --accent: #e8702a; --accent-hover: #ff8a3d; }
+
+/* Cereja */
+body[data-theme="red"]     { --accent: #d2364b; --accent-hover: #ec5468; }
+
+/* Cobalto */
+body[data-theme="blue"]    { --accent: #3f7fc4; --accent-hover: #5c9ce0; }
+
+/* Vinil (ameixa) */
+body[data-theme="purple"]  { --accent: #a65597; --accent-hover: #c271b3; }
+
+/* Oliva / verde-água */
+body[data-theme="green"]   { --accent: #2fa39a; --accent-hover: #46c2b8; }
+
+/* Âmbar */
+body[data-theme="orange"]  { --accent: #e09a1f; --accent-hover: #f5b440; }
+
+/* ------------------------------------------------------------
+   Papel — versão clara (aparelho creme, como os rádios de mesa)
+   O visor LCD e a madeira continuam escuros de propósito.
+   ------------------------------------------------------------ */
+body[data-theme="light"] {
+    --accent: #c4452c;
+    --accent-hover: #df5d42;
+
+    --bg-screen:     #d9c8a4;
+    --bg-panel:      #efe3c6;
+    --bg-panel-2:    #f6ecd4;
+    --bg-inset:      #e2d2ad;
+    --bg-card:       rgba(51, 38, 27, 0.05);
+    --bg-card-hover: rgba(51, 38, 27, 0.10);
+
+    --text-primary:   #33261b;
+    --text-secondary: #5e4a35;
+    --text-muted:     #8a7356;
+
+    --border-color:  rgba(51, 38, 27, 0.14);
+    --border-strong: rgba(51, 38, 27, 0.28);
+    --shadow-panel: 0 14px 30px rgba(60, 40, 20, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+body[data-theme="light"].app-body {
+    background:
+        radial-gradient(ellipse 70% 50% at 85% 0%, rgba(196, 69, 44, 0.15), transparent 60%),
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.015) 0 2px, transparent 2px 6px),
+        var(--bg-screen);
+}
+body[data-theme="light"] .crt::after,
+body[data-theme="light"].crt::after { opacity: 0.25; }
+body[data-theme="light"] .welcome h1,
+body[data-theme="light"] .section-header h2 { text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.6); }
+body[data-theme="light"] .rack { background: rgba(51, 38, 27, 0.06); box-shadow: inset 0 3px 8px rgba(60, 40, 20, 0.2); }
+body[data-theme="light"] .panel {
+    background:
+        radial-gradient(circle at 12px 12px, #b9a47e 0 2.5px, #8a7356 3px, transparent 3.5px),
+        radial-gradient(circle at calc(100% - 12px) 12px, #b9a47e 0 2.5px, #8a7356 3px, transparent 3.5px),
+        radial-gradient(circle at 12px calc(100% - 12px), #b9a47e 0 2.5px, #8a7356 3px, transparent 3.5px),
+        radial-gradient(circle at calc(100% - 12px) calc(100% - 12px), #b9a47e 0 2.5px, #8a7356 3px, transparent 3.5px),
+        linear-gradient(180deg, var(--bg-panel-2) 0%, var(--bg-panel) 100%);
+}
+/* Elementos que ficam sempre sobre fundo escuro mantêm o texto claro */
+body[data-theme="light"] .playlist-info h2,
+body[data-theme="light"] .max-title,
+body[data-theme="light"] .max-player-next-title,
+body[data-theme="light"] .max-next-title,
+body[data-theme="light"] .settings-titlebar h2,
+body[data-theme="light"] .deck-model { color: #f3e6c8; }
+body[data-theme="light"] .max-player-panel { --text-primary: #f3e6c8; --text-muted: #c9b48f; }
+
+/* Textos de LCD que ficam soltos sobre o painel claro */
+body[data-theme="light"] .user-profile .user-meta-top small,
+body[data-theme="light"] .section-header a,
+body[data-theme="light"] .welcome-kicker,
+body[data-theme="light"] .shelf-hint { color: var(--accent-dark); text-shadow: none; }
+body[data-theme="light"] .pasta-info p { color: var(--text-muted); }
